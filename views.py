@@ -41,7 +41,7 @@ def evidence(request, pfam_name):
                         ON cd.component_id = cs.component_id
                     JOIN target_components tc
                         ON tc.component_id = cs.component_id
-                    GROUP BY tid
+                    GROUP BY tid, cs.accession
                     HAVING COUNT(compd_id) =1)
         AS single_domains
         ON single_domains.tid = ass.tid
