@@ -43,7 +43,7 @@
   <script type="text/javascript" src="//www.ebi.ac.uk/sites/ebi.ac.uk/modules/custom/training_specific/training_specific.js?mm0jbl"></script>
   <script type="text/javascript" src="//www.ebi.ac.uk/sites/ebi.ac.uk/libraries/tinymce/jscripts/tiny_mce/plugins/media/js/embed.js?mm0jbl"></script>
   -->
-  <script type="text/javascript" src="/static/pfam_maps/d3/d3.v3.js"></script>
+  <script type="text/javascript" src="/static/pfam_maps/d3/d3.v3.min.js"></script>
   <script type="text/javascript"> 
     var top_acts = {{ top_acts|safe }};
     var top_mols = {{top_mols|safe }};
@@ -126,7 +126,9 @@
                                         {% endif %}
                                         <p  id="anks">
                                         </p>
-                                        <script type="text/javascript" src="/static/pfam_maps/js/scatterplot.js"></script>
+                                        
+					{% load staticfiles %}
+                                        <script type="text/javascript" src="{% static "pfam_maps/js/scatterplot.js" %}"></script>
                                        <!-- Content ends here -->
                                     </div>
                                 </div>
