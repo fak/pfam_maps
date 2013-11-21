@@ -1,4 +1,5 @@
 from django.db import connection
+from django.conf import settings
 import numpy as np
 import yaml
 import simplejson as json
@@ -80,9 +81,6 @@ def get_pfam_arch(assay_page):
 
 
 def standardize_acts(acts):
-    paramFile = open('local.yaml')
-    params = yaml.safe_load(paramFile)
-    ki_adjust = params['ki_adjust']
     std_acts = []
     lkp = {}
     for data in acts:
@@ -106,9 +104,9 @@ def standardize_acts(acts):
             standard_value = - standard_value
             standard_type = 'p' + standard_type.split(' ')[1]
             pass_filter = True
-        # Mixing types.
+        # adjusting Ki and Kd by Kalliokoski's factor, specified in settings.py
         if standard_type in ['pKi', 'pKd']:
-            standard_value = standard_value - ki_adjust
+            standard_value = standard_value - settings.GLOBAL_SETTINGS['ki_adjust']
             pass_filter = True
         # Filtering inactives.
         if standard_value >= 3 and pass_filter:
