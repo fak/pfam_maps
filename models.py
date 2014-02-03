@@ -85,62 +85,6 @@ class AtcClassification(models.Model):
     class Meta:
         db_table = u'atc_classification'
 
-class AuthGroup(models.Model):
-    id = models.IntegerField(primary_key=True)
-    name = models.CharField(unique=True, max_length=240)
-    class Meta:
-        db_table = u'auth_group'
-
-class AuthGroupPermissions(models.Model):
-    id = models.IntegerField(primary_key=True)
-    group = models.ForeignKey('AuthGroup')
-    permission = models.ForeignKey('AuthPermission')
-    class Meta:
-        db_table = u'auth_group_permissions'
-
-class AuthMessage(models.Model):
-    id = models.IntegerField(primary_key=True)
-    user = models.ForeignKey('AuthUser')
-    message = models.TextField()
-    class Meta:
-        db_table = u'auth_message'
-
-class AuthPermission(models.Model):
-    id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=150)
-    content_type = models.ForeignKey('DjangoContentType')
-    codename = models.CharField(max_length=300)
-    class Meta:
-        db_table = u'auth_permission'
-
-class AuthUser(models.Model):
-    id = models.IntegerField(primary_key=True)
-    username = models.CharField(max_length=90)
-    first_name = models.CharField(max_length=90)
-    last_name = models.CharField(max_length=90)
-    email = models.CharField(max_length=225)
-    password = models.CharField(max_length=384)
-    is_staff = models.IntegerField()
-    is_active = models.IntegerField()
-    is_superuser = models.IntegerField()
-    last_login = models.DateTimeField()
-    date_joined = models.DateTimeField()
-    class Meta:
-        db_table = u'auth_user'
-
-class AuthUserGroups(models.Model):
-    id = models.IntegerField(primary_key=True)
-    user = models.ForeignKey('AuthUser')
-    group = models.ForeignKey('AuthGroup')
-    class Meta:
-        db_table = u'auth_user_groups'
-
-class AuthUserUserPermissions(models.Model):
-    id = models.IntegerField(primary_key=True)
-    user = models.ForeignKey('AuthUser')
-    permission = models.ForeignKey('AuthPermission')
-    class Meta:
-        db_table = u'auth_user_user_permissions'
 
 class Binding(models.Model):
     standard_value = models.FloatField(null=True, blank=True)
