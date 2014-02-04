@@ -98,12 +98,12 @@ class AuthGroupPermissions(models.Model):
     class Meta:
         db_table = u'auth_group_permissions'
 
-class AuthMessage(models.Model):
-    id = models.IntegerField(primary_key=True)
-    user = models.ForeignKey('AuthUser')
-    message = models.TextField()
-    class Meta:
-        db_table = u'auth_message'
+#class AuthMessage(models.Model):
+#    id = models.IntegerField(primary_key=True)
+#    user = models.ForeignKey('AuthUser')
+#    message = models.TextField()
+#    class Meta:
+#        db_table = u'auth_message'
 
 class AuthPermission(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -113,34 +113,34 @@ class AuthPermission(models.Model):
     class Meta:
         db_table = u'auth_permission'
 
-class AuthUser(models.Model):
-    id = models.IntegerField(primary_key=True)
-    username = models.CharField(max_length=90)
-    first_name = models.CharField(max_length=90)
-    last_name = models.CharField(max_length=90)
-    email = models.CharField(max_length=225)
-    password = models.CharField(max_length=384)
-    is_staff = models.IntegerField()
-    is_active = models.IntegerField()
-    is_superuser = models.IntegerField()
-    last_login = models.DateTimeField()
-    date_joined = models.DateTimeField()
-    class Meta:
-        db_table = u'auth_user'
+#class AuthUser(models.Model):
+#    id = models.IntegerField(primary_key=True)
+#    username = models.CharField(max_length=90)
+#    first_name = models.CharField(max_length=90)
+#    last_name = models.CharField(max_length=90)
+#    email = models.CharField(max_length=225)
+#    password = models.CharField(max_length=384)
+#    is_staff = models.IntegerField()
+#    is_active = models.IntegerField()
+#    is_superuser = models.IntegerField()
+#    last_login = models.DateTimeField()
+#    date_joined = models.DateTimeField()
+#    class Meta:
+#        db_table = u'auth_user'
 
-class AuthUserGroups(models.Model):
-    id = models.IntegerField(primary_key=True)
-    user = models.ForeignKey('AuthUser')
-    group = models.ForeignKey('AuthGroup')
-    class Meta:
-        db_table = u'auth_user_groups'
+#class AuthUserGroups(models.Model):
+#    id = models.IntegerField(primary_key=True)
+#    user = models.ForeignKey('AuthUser')
+#    group = models.ForeignKey('AuthGroup')
+#    class Meta:
+#        db_table = u'auth_user_groups'
 
-class AuthUserUserPermissions(models.Model):
-    id = models.IntegerField(primary_key=True)
-    user = models.ForeignKey('AuthUser')
-    permission = models.ForeignKey('AuthPermission')
-    class Meta:
-        db_table = u'auth_user_user_permissions'
+#class AuthUserUserPermissions(models.Model):
+#    id = models.IntegerField(primary_key=True)
+#    user = models.ForeignKey('AuthUser')
+#    permission = models.ForeignKey('AuthPermission')
+#    class Meta:
+#        db_table = u'auth_user_user_permissions'
 
 class Binding(models.Model):
     standard_value = models.FloatField(null=True, blank=True)
@@ -308,17 +308,17 @@ class DefinedDailyDose(models.Model):
     class Meta:
         db_table = u'defined_daily_dose'
 
-class DjangoAdminLog(models.Model):
-    id = models.IntegerField(primary_key=True)
-    action_time = models.DateTimeField()
-    user = models.ForeignKey('AuthUser')
-    content_type = models.ForeignKey('DjangoContentType', null=True, blank=True)
-    object_id = models.TextField(blank=True)
-    object_repr = models.CharField(max_length=600)
-    action_flag = models.IntegerField()
-    change_message = models.TextField()
-    class Meta:
-        db_table = u'django_admin_log'
+#class DjangoAdminLog(models.Model):
+#    id = models.IntegerField(primary_key=True)
+#    action_time = models.DateTimeField()
+#    user = models.ForeignKey('AuthUser')
+#    content_type = models.ForeignKey('DjangoContentType', null=True, blank=True)
+#    object_id = models.TextField(blank=True)
+#    object_repr = models.CharField(max_length=600)
+#    action_flag = models.IntegerField()
+#    change_message = models.TextField()
+#    class Meta:
+#        db_table = u'django_admin_log'
 
 class DjangoContentType(models.Model):
     id = models.IntegerField(primary_key=True)
