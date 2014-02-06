@@ -118,17 +118,23 @@ def standardize_acts(acts):
     return (std_acts, lkp)
 
 def add_meta(top_acts):
-    act_ids = [str(x[3]) for x in top_acts]
-    act_str = "','".join(act_ids)
-    data = custom_sql("""SELECT act.activity_id, td.pref_name, ass.chembl_id, td.chembl_id, md.chembl_id
-                                 FROM activities act
-                                 JOIN assays ass
-                                     ON act.assay_id = ass.assay_id
-                                 JOIN target_dictionary td
-                                     ON ass.tid = td.tid
-                                 JOIN molecule_dictionary md
-                                     ON md.molregno = act.molregno
-                                 WHERE activity_id IN('%s')""" % act_str, [])
+    if not top_acts:
+        return top_acts
+    act_ids = [x[3] for x in top_acts]
+    placeholder = "%s"
+    placeholder = ','.join([placeholder] * len(act_ids))
+    query = """
+    SELECT act.activity_id, td.pref_name, ass.chembl_id, td
+.chembl_id, md.chembl_id
+    FROM activities act
+    JOIN assays ass
+        ON act.assay_id = ass.assay_id
+    JOIN target_dictionary td
+        ON ass.tid = td.tid
+    JOIN molecule_dictionary md
+        ON md.molregno = act.molregno
+    WHERE activity_id IN(%s)""" % placeholder
+    data = custom_sql(query, act_ids)
     lkp = {}
     for meta in data:
         act = meta[0]
