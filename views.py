@@ -8,6 +8,7 @@ from django.db import connection
 import itertools
 import helper
 import time
+from django.contrib.auth import authenticate, login
 
 
 def index(request):
@@ -305,3 +306,26 @@ def details(request, assay_id):
          'desc'     : desc,
         }
     return render_to_response('pfam_maps/details_ebi.html',c,                          context_instance=RequestContext(request))
+
+
+def login(request):
+    t = loader.get_template('registration/login.html')
+    c = Context({
+        })
+    return HttpResponse(t.render(c))
+
+def my_view(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            # Redirect to success page.
+            return render_to_response('pfam_maps/index.html',c,context_instance=RequestContext(request))
+        else:
+            # Return a 'disabled account' error message
+            return render_to_response('pfam_maps/index.html',c,context_instance=RequestContext(request))
+    else:
+        # Return an 'invalid login' error message.
+        print 'bah'
