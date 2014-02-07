@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 
+
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -17,6 +18,7 @@ urlpatterns = patterns('pfam_maps.views',
     url(r'^vote/conflicts/(?P<assay_id>CHEMBL\d+)/(?P<conflict_id>.+)/$', 'vote_on_assay' , name =  'vote_on_assay'),
     url(r'^revoke/resolved/(?P<assay_id>CHEMBL\d+)/(?P<conflict_id>.+)/$', 'revoke_assay' , name  =  'revoke_assay'),
     url(r'^details/conflicts/(?P<act>\d+)/$', 'details', name = 'details'),
+    url(r'^accounts/login/$', 'login', name= 'login'),
     )
 
 urlpatterns += patterns('',
