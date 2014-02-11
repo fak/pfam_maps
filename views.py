@@ -308,23 +308,30 @@ def details(request, assay_id):
     return render_to_response('pfam_maps/details_ebi.html',c,                          context_instance=RequestContext(request))
 
 
-def login(request):
-    t = loader.get_template('registration/login.html')
-    c = Context({
-        })
-    return HttpResponse(t.render(c))
+def login_launch(request):
+    c = {
+        }
+    return render_to_response('registration/login.html',c, context_instance=RequestContext(request))
+
+
+def logout(request):
+    c = {
+        }
+    return render_to_response('registration/login.html',c, context_instance=RequestContext(request))
+
 
 def my_view(request):
     username = request.POST['username']
     password = request.POST['password']
     user = authenticate(username=username, password=password)
+    c={}
     if user is not None:
         if user.is_active:
             login(request, user)
             # Redirect to success page.
             return render_to_response('pfam_maps/index.html',c,context_instance=RequestContext(request))
         else:
-            # Return a 'disabled account' error message
+            # Return a 'disabled account' error message 
             return render_to_response('pfam_maps/index.html',c,context_instance=RequestContext(request))
     else:
         # Return an 'invalid login' error message.
