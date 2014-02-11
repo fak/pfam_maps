@@ -19,6 +19,8 @@ urlpatterns = patterns('pfam_maps.views',
     url(r'^revoke/resolved/(?P<assay_id>CHEMBL\d+)/(?P<conflict_id>.+)/$', 'revoke_assay' , name  =  'revoke_assay'),
     url(r'^details/conflicts/(?P<act>\d+)/$', 'details', name = 'details'),
     url(r'^accounts/login/$', 'login', name= 'login'),
+    url(r'^accounts/logout/$', 'logout', name= 'logout'),
+    url(r'^accounts/profile/$', 'my_view', name= 'accounts_profile'),
     )
 
 urlpatterns += patterns('',
