@@ -57,10 +57,12 @@
       <div class="starter-template">
         <h1>ppdms</h1>
         <p class="lead">Privileged Pfam-A domains mediate small molecule binding</p> 
-        <div class="well">
-            <p> This website provides enriched annotation for protein targets in the ChEMBL database. We have implemented a simple heuristic to map small molecule binding to protein domains. In this implementation we follow Pfam-A domain definitions. For any protein attainable to our approach, we propose a Pfam domain that mediates small molecule binding. This is intended to assist data-mining approaches that rely on rich annotations across a large number of data entries. As a word of caution, this is an automatic annotation and the heuristic can fault on proteins that bind ligands through more than one domain. Therefore, if you are interested in a particular small molecule and its protein target, we recommend also checking the original publication. 
-	    </p>
-         </div>
+        <p> A number of architectures caused conflicting mappings. Of these,  {{ clash_count }} mappings were resolved manually. Associated activities are summarised here, broken down by architecture type:</p>
+        <ul>
+            {% for name, count in clash_arch.items %}
+            <li><a href="/pfam_maps/resolved/{{ name }}/">{{ name }}</a> ({{ count|length }} activities) </li>
+            {% endfor %}
+      </div>
     </div><!-- /.container -->
 
 
@@ -71,4 +73,5 @@
     <script src="/static/pfam_maps/dist/js/bootstrap.min.js"></script>
   </body>
 </html>
+
 

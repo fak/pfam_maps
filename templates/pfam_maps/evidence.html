@@ -24,6 +24,14 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <link rel="stylesheet" type="text/css" href="/static/pfam_maps/css/tooltipster.css" />
+  <script type="text/javascript" src="/static/pfam_maps/js/jquery.tooltipster.min.js"></script>
+  <script type="text/javascript" src="/static/pfam_maps/d3/d3.v3.min.js"></script>
+  <script type="text/javascript"> 
+    var top_acts = {{ top_acts|safe }};
+    var top_mols = {{top_mols|safe }};
+  </script>
   </head>
 
   <body>
@@ -57,18 +65,37 @@
       <div class="starter-template">
         <h1>ppdms</h1>
         <p class="lead">Privileged Pfam-A domains mediate small molecule binding</p> 
-        <div class="well">
-            <p> This website provides enriched annotation for protein targets in the ChEMBL database. We have implemented a simple heuristic to map small molecule binding to protein domains. In this implementation we follow Pfam-A domain definitions. For any protein attainable to our approach, we propose a Pfam domain that mediates small molecule binding. This is intended to assist data-mining approaches that rely on rich annotations across a large number of data entries. As a word of caution, this is an automatic annotation and the heuristic can fault on proteins that bind ligands through more than one domain. Therefore, if you are interested in a particular small molecule and its protein target, we recommend also checking the original publication. 
-	    </p>
-         </div>
+        <h3> {{ pfam_name }} </h3>
+        {% if top_mols and top_acts  %}
+            <p> Shown below are measured interactions of the {{ pfam_name }} Pfam-A domain with small molecules. Each point represents a measurement. There is currently a limit of   ten on the number of displayed molecules. The total number of activities for this domain type in ChEMBL is {{ n_acts }}. For some Pfam-A domains, such as 7tm_1, there will be   many more compounds.</p>
+        {% else %}
+            <p>No index  available.</p>
+        {% endif %}
+      </div>
     </div><!-- /.container -->
-
-
+    <div id="anks">
+        <!--{% load staticfiles %}
+        <script type="text/javascript" src="{% static "pfam_maps/js/scatterplot.js" %}"></script>-->
+	<script type="text/javascript" src="/static/pfam_maps/js/scatterplot.js"></script>
+    </div>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="/static/pfam_maps/dist/js/bootstrap.min.js"></script>
+  <script>
+    jQuery(document).ready(function() {
+     $('.tooltip').tooltip({
+         arrow: false,
+         delay: 200,
+         interactive: true,
+         theme: '.tooltipster-light',
+         });
+      });
+  </script>
+
+
+
   </body>
 </html>
 

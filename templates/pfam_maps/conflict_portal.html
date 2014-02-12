@@ -57,10 +57,15 @@
       <div class="starter-template">
         <h1>ppdms</h1>
         <p class="lead">Privileged Pfam-A domains mediate small molecule binding</p> 
-        <div class="well">
-            <p> This website provides enriched annotation for protein targets in the ChEMBL database. We have implemented a simple heuristic to map small molecule binding to protein domains. In this implementation we follow Pfam-A domain definitions. For any protein attainable to our approach, we propose a Pfam domain that mediates small molecule binding. This is intended to assist data-mining approaches that rely on rich annotations across a large number of data entries. As a word of caution, this is an automatic annotation and the heuristic can fault on proteins that bind ligands through more than one domain. Therefore, if you are interested in a particular small molecule and its protein target, we recommend also checking the original publication. 
-	    </p>
-         </div>
+	<p> There are {{ act_count }} activities that could be mapped without conflicts. These are activities from binding assays of the type 'Ki', 'Kd', 'IC50', 'EC50' or logarithmic conversions thereof. In theory, the mapping could be extended to other activity types, as long   as the mapping to the target is a direct mapping in the assay.</p>
+        <p> There are {{ clash_count }} activities where the mapping defaulted to more than one domain type. Of these, {{ man_count }} have been manually resolved.</p>
+         <ul>
+             {% for name, count in clash_arch.items %}
+             <li><a href="/pfam_maps/conflicts/{{ name }}/">{{ name }}</a> ({{ count|length }} activities) </li>
+             {% endfor %}
+         </ul>
+         <p> There are also {{ dub_count }} activities where the mapping defaulted to multiple instances of the same domain type. </p>
+      </div>
     </div><!-- /.container -->
 
 
@@ -71,4 +76,5 @@
     <script src="/static/pfam_maps/dist/js/bootstrap.min.js"></script>
   </body>
 </html>
+
 
