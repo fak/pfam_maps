@@ -50,7 +50,7 @@ def evidence(request, pfam_name):
         """ , [pfam_name])
     (std_acts, lkp) = helper.standardize_acts(acts)
     (top_mols, top_acts) = helper.filter_acts(std_acts, lkp)
-    t = loader.get_template('pfam_maps/evidence_ebi.html')
+    t = loader.get_template('pfam_maps/evidence.html')
     n_acts = len(std_acts)
     c = Context({
         'top_mols'  : top_mols,
@@ -90,7 +90,7 @@ def conflicts_portal(request):
     #      AND category_flag = 2
     #    """, [])
     #clash_arch = helper.arch_assays(data)
-    t = loader.get_template('pfam_maps/conflict_portal_ebi.html')
+    t = loader.get_template('pfam_maps/conflict_portal.html')
     c = Context({
         'act_count'   : act_count,
         'man_count'   : man_count,
@@ -105,7 +105,7 @@ def resolved_portal(request):
     SELECT DISTINCT activity_id, domain_name FROM pfam_maps WHERE category_flag=2 AND manual_flag=1""", [])
     clash_arch = helper.process_arch(clash_arch)
     clash_acts = (list(itertools.chain(*clash_arch.values())))
-    t = loader.get_template('pfam_maps/resolved_portal_ebi.html')
+    t = loader.get_template('pfam_maps/resolved_portal.html')
     c = Context({
         'clash_count' : len(clash_acts),
         'clash_arch'  : clash_arch,
@@ -236,7 +236,7 @@ def conflicts(request, conflict_id):
          'doms'         : dom_l,
          'arch_idx'     : arch_idx
         }
-    return render_to_response('pfam_maps/conflict_ebi.html',c, context_instance=RequestContext(request))
+    return render_to_response('pfam_maps/conflict.html',c, context_instance=RequestContext(request))
 
 
 def resolved(request, conflict_id):
@@ -281,7 +281,7 @@ def resolved(request, conflict_id):
          'doms'         : dom_l,
          'arch_idx'     : arch_idx
         }
-    return render_to_response('pfam_maps/resolved_ebi.html',c, context_instance=RequestContext(request))
+    return render_to_response('pfam_maps/resolved.html',c, context_instance=RequestContext(request))
 
 
 def details(request, assay_id):
