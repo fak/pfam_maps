@@ -133,7 +133,9 @@
                 .enter()
                 .append("svg:circle")
                 .attr("class", "circle")
-                .attr("data-toggle", "tooltip")
+                .attr("rel", "popover")
+                .attr("data-placement", "right")
+                //.attr("title", "testing the water")
                 .attr("title", function(d){ return "<img src='https://www.ebi.ac.uk/chembldb/compound/displayimage_large/"+ d[0] + "' style='height:130px; width:130px;' />" + "<br>" + d[4] + "<br>assay id:"+ "<a href=https://www.ebi.ac.uk/chembldb/assay/inspect/"+ d[5] + ">"+ d[5] + "</a>" + "<br>protein id:"+ "<a href=https://www.ebi.ac.uk/chembldb/target/inspect/"+ d[6] + ">"+ d[6] + "</a>"+ "<br>Compound id:"+ "<a href=https://www.ebi.ac.uk/chembldb/compound/inspect/"+ d[7] + ">"+ d[7] + "</a>";})
                 .attr("cy", function(d) {
                             return yScale(d[0])+ Math.floor(Math.random()*13) - 6;
