@@ -21,7 +21,7 @@ def index(request):
 def evidence_portal(request):
     data = helper.custom_sql('SELECT DISTINCT domain_name FROM pfam_maps', [])
     names = sorted([x[0] for x in data])
-    t = loader.get_template('pfam_maps/evidence_portal_ebi.html')
+    t = loader.get_template('pfam_maps/evidence_portal.html')
     c = Context({
         'names': names,
     })
