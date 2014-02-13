@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="www.ebi.ac.uk/web_guidelines/images/logos/EMBL-EBI/logo.png">
+
+    <title>Starter Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/pfam_maps/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/pfam_maps/css/starter-template.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/pfam_maps">ppdms</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/pfam_maps/conflicts">Conflicts</a></li>
+            <li><a href="/pfam_maps/resolved">Resolved</a></li>
+            <li><a href="/pfam_maps/evidence">Evidence</a></li>
+            <li><a href="/pfam_maps/accounts/login">User Profile</a></li>
+            <li><a href="#contact">About</a></li>
+          </ul>
+          <p class="navbar-text pull-right">Signed in as Mark Otto</p>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="starter-template">
+        <h1>ppdms</h1>
+        <p class="lead">Privileged Pfam-A domains mediate small molecule binding</p> 
+        <h3> Evidence for small molecule binding to Pfam-A domains </h3>
+        <p>We query the ChEMBL database for measured interactions of small molecules with single domain proteins containing a given domain. The requirements for a measurement to be counted as evidence are then the following:</p>
+        <ul>
+            <li> Activity type must be one of 'Ki','Kd','IC50','EC50', 'AC50' or logarithmic conversion. </li>
+            <li> The relationship in the database must be '=' </li>
+            <li> The assay type must be assay_type = 'B' </li>
+            <li> The relationship type in the assay to target mapping must be relationship_type = 'D'</li>
+            <li> The potency threshold was set at 1 &mu;M.</li>
+        </ul>
+        <p>Evidence for small molecule binding to {{ names|length }} Pfam-A domains is listed below.</p>
+            {% if names %}
+                <ul>
+                {% for name in names %}
+                    <li><a href="/pfam_maps/evidence/{{ name }}/">{{ name }}</a></li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No index  available.</p>
+            {% endif %}
+      </div>
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="/static/pfam_maps/dist/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
+
