@@ -24,9 +24,6 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-  <script src="https://code.jquery.com/jquery.js"></script>
-  <link rel="stylesheet" type="text/css" href="/static/pfam_maps/css/tooltipster.css" />
-  <script type="text/javascript" src="/static/pfam_maps/js/jquery.tooltipster.min.js"></script>
   <script type="text/javascript" src="/static/pfam_maps/d3/d3.v3.min.js"></script>
   <script type="text/javascript"> 
     var top_acts = {{ top_acts|safe }};
@@ -64,36 +61,37 @@
 
       <div class="starter-template">
         <h1>ppdms</h1>
-        <p class="lead">Privileged Pfam-A domains mediate small molecule binding</p> 
+        <p class="lead" data-toggle="tooltip" id='test'>Privileged Pfam-A domains mediate small molecule binding</p> 
         <h3> {{ pfam_name }} </h3>
         {% if top_mols and top_acts  %}
             <p> Shown below are measured interactions of the {{ pfam_name }} Pfam-A domain with small molecules. Each point represents a measurement. There is currently a limit of   ten on the number of displayed molecules. The total number of activities for this domain type in ChEMBL is {{ n_acts }}. For some Pfam-A domains, such as 7tm_1, there will be   many more compounds.</p>
         {% else %}
             <p>No index  available.</p>
         {% endif %}
+        <div id="anks">
+          <script type="text/javascript" src="/static/pfam_maps/js/scatterplot.js"></script>
+        </div>
       </div>
     </div><!-- /.container -->
-    <div id="anks">
-        <!--{% load staticfiles %}
-        <script type="text/javascript" src="{% static "pfam_maps/js/scatterplot.js" %}"></script>-->
-	<script type="text/javascript" src="/static/pfam_maps/js/scatterplot.js"></script>
-    </div>
+
+
+
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="/static/pfam_maps/dist/js/bootstrap.min.js"></script>
-  <script>
-    jQuery(document).ready(function() {
-     $('.tooltip').tooltip({
-         arrow: false,
-         delay: 200,
-         interactive: true,
-         theme: '.tooltipster-light',
-         });
-      });
-  </script>
-
+    <!-- Below a simple example of how to get the popover working - this would need to go in the body though...
+    <button type="button" class="btn btn-default" rel="popover" data-placement="left" title="Popover on left">Popover on left</button>-->
+    <script type="text/javascript">
+       $(function () {
+           $("[rel='popover']").popover({   // selecting all elements where rel=popover
+               'container':'body',          // need this to display popovers in SVG 
+               'html':true                  // need this to display images.
+           });
+       });
+   </script>
 
 
   </body>
