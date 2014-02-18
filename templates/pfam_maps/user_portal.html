@@ -48,23 +48,40 @@
             <li><a href="#contact">About</a></li>
           </ul>
           {% if user.is_authenticated %}
-            <p class="navbar-text pull-right"> signed in as {{ user.username }}.</p>
-          {% else %}
+      	    <p class="navbar-text pull-right"> signed in as {{ user.username }}.</p>
+    	  {% else %}
             <p class="navbar-text pull-right">Not logged in.</p>
           {% endif %}
+
         </div><!--/.nav-collapse -->
       </div>
     </div>
 
     <div class="container">
-
       <div class="starter-template">
         <h1>ppdms</h1>
         <p class="lead">Privileged Pfam-A domains mediate small molecule binding</p> 
-        <div class="well">
-            <p> This website provides enriched annotation for protein targets in the ChEMBL database. We have implemented a simple heuristic to map small molecule binding to protein domains. In this implementation we follow Pfam-A domain definitions. For any protein attainable to our approach, we propose a Pfam domain that mediates small molecule binding. This is intended to assist data-mining approaches that rely on rich annotations across a large number of data entries. As a word of caution, this is an automatic annotation and the heuristic can fault on proteins that bind ligands through more than one domain. Therefore, if you are interested in a particular small molecule and its protein target, we recommend also checking the original publication. 
-	    </p>
-         </div>
+          {% if user.is_authenticated %}
+            <div class="form-horizontal">
+              <form action="{% url 'logout' %}" method="post">{%csrf_token%}
+                <button class="btn btn" type="submit" value="rand">Logout </button>
+              </form>
+            </div> 
+          {% else %}
+            {% block content %}
+  	      {% if form.errors %}
+                <p class="error">Sorry, that's not a valid username or password</p>
+              {% endif %}
+              <div class="form-horizontal">
+                <form action="{% url 'login' %}" method="post">{%csrf_token%}
+                  <input class="form" name="username" type="text" placeholder="user">
+                  <input class="form" name="password" type="text" placeholder="password">
+                  <button class="btn btn" type="submit"> Login </button>        
+                </form>
+              </div>
+            {% endblock %}
+          {% endif %}
+        </div>
     </div><!-- /.container -->
 
 

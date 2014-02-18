@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="www.ebi.ac.uk/web_guidelines/images/logos/EMBL-EBI/logo.png">
 
-    <title>Starter Template for Bootstrap</title>
+    <title>PoPaDoMs Server</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/static/pfam_maps/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -47,7 +47,11 @@
             <li><a href="/pfam_maps/accounts/profile/">User Profile</a></li>
             <li><a href="#contact">About</a></li>
           </ul>
-          <p class="navbar-text pull-right">Signed in as Mark Otto</p>
+          {% if user.is_authenticated %}
+            <p class="navbar-text pull-right"> signed in as {{ user.username }}.</p>
+          {% else %}
+            <p class="navbar-text pull-right">Not logged in.</p>
+          {% endif %}
         </div><!--/.nav-collapse -->
       </div>
     </div>
