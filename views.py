@@ -8,24 +8,20 @@ from django.db import connection
 import itertools
 import helper
 import time
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 
 def index(request):
-    t = loader.get_template('pfam_maps/index.html')
-    c = Context({
-        })
-    return HttpResponse(t.render(c))
-
+    c = {}
+    return render_to_response('pfam_maps/index.html',c, context_instance=RequestContext(request))
 
 def evidence_portal(request):
     data = helper.custom_sql('SELECT DISTINCT domain_name FROM pfam_maps', [])
     names = sorted([x[0] for x in data])
-    t = loader.get_template('pfam_maps/evidence_portal.html')
     c = Context({
         'names': names,
     })
-    return HttpResponse(t.render(c))
+    return render_to_response('pfam_maps/evidence_portal.html',c, context_instance=RequestContext(request))
 
 
 def evidence(request, pfam_name):
@@ -50,7 +46,6 @@ def evidence(request, pfam_name):
         """ , [pfam_name])
     (std_acts, lkp) = helper.standardize_acts(acts)
     (top_mols, top_acts) = helper.filter_acts(std_acts, lkp)
-    t = loader.get_template('pfam_maps/evidence.html')
     n_acts = len(std_acts)
     c = Context({
         'top_mols'  : top_mols,
@@ -58,8 +53,7 @@ def evidence(request, pfam_name):
         'pfam_name' : pfam_name,
         'n_acts'    : n_acts
         })
-    return HttpResponse(t.render(c))
-
+    return render_to_response('pfam_maps/evidence.html',c, context_instance=RequestContext(request))
 
 def conflicts_portal(request):
     act_count = helper.custom_sql("""
@@ -90,7 +84,6 @@ def conflicts_portal(request):
     #      AND category_flag = 2
     #    """, [])
     #clash_arch = helper.arch_assays(data)
-    t = loader.get_template('pfam_maps/conflict_portal.html')
     c = Context({
         'act_count'   : act_count,
         'man_count'   : man_count,
@@ -98,36 +91,19 @@ def conflicts_portal(request):
         'clash_count' : clash_count,
         'clash_arch'  : clash_arch,
         })
-    return HttpResponse(t.render(c))
+    return render_to_response('pfam_maps/conflict_portal.html',c, context_instance=RequestContext(request))
 
 def resolved_portal(request):
     clash_arch = helper.custom_sql("""
     SELECT DISTINCT activity_id, domain_name FROM pfam_maps WHERE category_flag=2 AND manual_flag=1""", [])
     clash_arch = helper.process_arch(clash_arch)
     clash_acts = (list(itertools.chain(*clash_arch.values())))
-    t = loader.get_template('pfam_maps/resolved_portal.html')
     c = Context({
         'clash_count' : len(clash_acts),
         'clash_arch'  : clash_arch,
         })
-    return HttpResponse(t.render(c))
+    return render_to_response('pfam_maps/resolved_portal.html',c, context_instance=RequestContext(request))
 
-def vote_on_activity(request, conflict_id, act):
-    try:
-        domain_name = request.POST['choice']
-    except KeyError:
-        return render_to_response('index.html', {
-            'error_message': "You didn't select a choice.",
-        }, context_instance=RequestContext(request))
-    data = helper.custom_sql("""
-    SELECT DISTINCT compd_id
-        FROM pfam_maps
-        WHERE activity_id = %s AND domain_name = %s
-        """ ,[act, domain_name])[0]
-    for compd_id in data:
-        new_entry = PfamMaps(activity_id= act, compd_id = compd_id, domain_name = domain_name, status_flag = 0, manual_flag = 1 )
-        new_entry.save()
-    return HttpResponseRedirect(reverse('conflicts', args=(conflict_id,)))
 
 
 def vote_on_assay(request, conflict_id, assay_id):
@@ -160,7 +136,8 @@ def vote_on_assay(request, conflict_id, assay_id):
                 entry.status_flag = 0
             entry.save()
     return HttpResponseRedirect(reverse('conflicts', args=(conflict_id,)))
-
+    #c=  {}
+    #return render_to_response(reverse('conflicts', args=(conflict_id,)),c, context_instance=RequestContext(request))
 
 def revoke_assay(request, conflict_id, assay_id):
     try:
@@ -214,7 +191,7 @@ def conflicts(request, conflict_id):
         #    out.write(ass + "', '")
         #out.close()
     except KeyError:
-        return render_to_response('pfam_maps/index.html')
+        return render_to_response('pfam_maps/index.html',context_instance=RequestContext(request))
     assay_hier = {}
     for ass_id in arch_assays:
         assay_hier[ass_id] = {}
@@ -259,7 +236,7 @@ def resolved(request, conflict_id):
     try:
         arch_assays = clash_arch[conflict_id]
     except KeyError:
-        return render_to_response('pfam_maps/index.html')
+        return render_to_response('pfam_maps/index.html',context_instance=RequestContext(request))
     assay_hier = {}
     for ass_id in arch_assays:
         assay_hier[ass_id] = {}
@@ -308,19 +285,17 @@ def details(request, assay_id):
     return render_to_response('pfam_maps/details_ebi.html',c,                          context_instance=RequestContext(request))
 
 
-def login_launch(request):
-    c = {
-        }
-    return render_to_response('registration/login.html',c, context_instance=RequestContext(request))
+def user_portal(request):
+    c = {}
+    return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
 
 
-def logout(request):
-    c = {
-        }
-    return render_to_response('registration/login.html',c, context_instance=RequestContext(request))
+def logout_view(request):
+    logout(request)
+    c=  {}
+    return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
 
-
-def my_view(request):
+def login_view(request):
     username = request.POST['username']
     password = request.POST['password']
     user = authenticate(username=username, password=password)
@@ -328,11 +303,11 @@ def my_view(request):
     if user is not None:
         if user.is_active:
             login(request, user)
-            # Redirect to success page.
-            return render_to_response('pfam_maps/index.html',c,context_instance=RequestContext(request))
+            # Redirect to success pagei.
+            return render_to_response('pfam_maps/user_portal.html',c,context_instance=RequestContext(request))
         else:
-            # Return a 'disabled account' error message 
-            return render_to_response('pfam_maps/index.html',c,context_instance=RequestContext(request))
+            # Return a 'disabled account' error message
+            return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
     else:
         # Return an 'invalid login' error message.
-        print 'bah'
+            return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
