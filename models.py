@@ -1,11 +1,6 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#     * Rearrange models' order
-#     * Make sure each model has one field with primary_key=True
-# Feel free to rename the models, but don't rename db_table values or field names.
-#
-# Also note: You'll have to insert the output of 'django-admin.py sqlcustom [appname]'
-# into your database.
+# This was a auto-generated Django model module.
+# After generating it with python manage.py inspectdb > pfam_maps/models.py
+
 from __future__ import unicode_literals
 
 from django.db import models
