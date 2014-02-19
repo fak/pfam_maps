@@ -16,6 +16,7 @@ class PfamMaps(models.Model):
     manual_flag = models.IntegerField(null=True, blank=True)
     comment = models.CharField(max_length=450, blank=True)
     timestamp = models.CharField(max_length=75, blank=True)
+    submitter = models.CharField(max_length=150, blank=True)
     class Meta:
         db_table = 'pfam_maps'
 
