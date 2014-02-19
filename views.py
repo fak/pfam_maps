@@ -105,8 +105,9 @@ def resolved_portal(request):
     return render_to_response('pfam_maps/resolved_portal.html',c, context_instance=RequestContext(request))
 
 
-
 def vote_on_assay(request, conflict_id, assay_id):
+    if not request.user.is_authenticated():
+        return render_to_response('pfam_maps/user_portal.html',context_instance=RequestContext(request))
     try:
         domain_name = request.POST['choice']
     except KeyError:
@@ -114,7 +115,7 @@ def vote_on_assay(request, conflict_id, assay_id):
     try:
         comment = request.POST['comment']
     except KeyError:
-        comment = "revoked w/o comment"
+        comment = "committed w/o comment"
     data = helper.custom_sql("""
     SELECT DISTINCT act.activity_id, compd_id
         FROM pfam_maps pm
@@ -140,6 +141,8 @@ def vote_on_assay(request, conflict_id, assay_id):
     #return render_to_response(reverse('conflicts', args=(conflict_id,)),c, context_instance=RequestContext(request))
 
 def revoke_assay(request, conflict_id, assay_id):
+    if not request.user.is_authenticated():
+        return render_to_response('pfam_maps/user_portal.html',context_instance=RequestContext(request))
     try:
         comment = request.POST['comment']
     except KeyError:
