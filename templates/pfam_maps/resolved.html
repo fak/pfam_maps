@@ -73,7 +73,7 @@
             <li><a href="/pfam_maps/resolved">Resolved</a></li>
             <li><a href="/pfam_maps/evidence">Evidence</a></li>
             <li><a href="/pfam_maps/accounts/profile/">User Profile</a></li>
-            <li><a href="#contact">About</a></li>
+            <li><a href="/pfam_maps/about/">About</a></li>
           </ul>
           {% if user.is_authenticated %}
             <p class="navbar-text pull-right"> signed in as {{ user.username }}.</p>
@@ -97,15 +97,17 @@
                {% endfor %}
         </ul>
 
-        <h1>ppdms</h1>
-        <p class="lead">Privileged Pfam-A domains mediate small molecule binding</p> 
         {% if assay_hier and arch and doms %}
             <h3> Conflicting architecture: {{ arch }}  </h3>
             {% for ass, lkp in assay_hier.items %}
-                <h4>Assay-id: <a href="https://www.ebi.ac.uk/chembldb/assay/inspect/{{  ass_id }}" target="blank"> {{ ass_id }} </a><a href= "/pfam_maps/details/conflicts/{{ ass }}/ "> {{   ass }} </a></h4>
-                <p> <strong>Pubmed-ID</strong>: <a href="http://europepmc.org/abstract/MED/{{lkp.pubmed}}"            target="_blank"> {{ lkp.pubmed }} </a>. <br> <strong>Description</strong>: {{ lkp.description }}  </p>
-                <p>Last edit on {{lkp.timestamp}}: <em> {{ lkp.comment }} </em>  </p>
-                <p>Assigned pref_name of the assay target - <strong>{{ lkp.pref_name }} </strong> <br>
+            <p><strong>Assay-id</strong>: <a href="https://www.ebi.ac.uk/chembldb/assay/inspect/{{  ass }}"              target="blank"> {{ ass }} </a></p> <!--<a href= "/pfam_maps/details/conflicts/{{ ass }}/ "> {{   ass }} </a></h4>-->
+        <p> <strong>Pubmed-ID</strong>: <a href="http://europepmc.org/abstract/MED/{{lkp.pubmed}}" target="_blank">{{ lkp.pubmed }} </a> </p>
+                <p> <strong>Description</strong>: {{ lkp.description }}  </p>
+                <p><strong>Assay target pref_name</strong>: {{ lkp.pref_name }} </p>
+                <p><strong>Last edit</strong>: {{lkp.timestamp}} -- submitted by <strong>{{lkp.submitter}}</strong>
+                <div class="well">
+                    <p><em> {{ lkp.comment }} </em></p>
+                </div> 
                 {{ lkp.pref_name}} is composed of the following chain(s):
                 <ul>
                     {% for uniprot in lkp.components %}
@@ -119,10 +121,12 @@
                         </script>
                 {% endfor %}
                 </p>
-                <form action="{% url 'revoke_assay' ass arch %}" method="post">{% csrf_token %}
-                    Comment: <input type="text" name="comment"><br>
-                    <input type="submit" value="Revoke">
-                </form>
+                <div class="form-horizontal">
+                    <form action="{% url 'revoke_assay' ass arch %}" method="post">{% csrf_token %}
+                        <input class="form" name="password" type="text" placeholder="Your comment here.">
+                        <button class="btn btn" type="submit" value="rand">Revoke</button>
+                    </form>
+                </div>
             {% endfor %}
             Page {{ arch_idx.number }} of {{ arch_idx.paginator.num_pages }}.
         {% else %}

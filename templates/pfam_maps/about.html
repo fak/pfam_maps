@@ -64,16 +64,31 @@
         <div class="well">
             <p>Welcome to ppdms - a platform that facilitates manual refinements of a mapping of small molecule binding to Pfam-A domains. The mapping aims to link measurements of small molecule bioactivity stored in the ChEMBL database to regions within a given protein that are are described by Pfam-A domains. By associating bioactivity with a protein domain, rather than the whole length protein, the mapping enables meaningful alignments of drug targets and ligand-fishing approaches. </p>
         </div>
-        <h4>Why should I use ppdms</h4>
-        <p> The ppdms facility is designed for users of the ChEMBL database who rely on sequence information to relate proteins to bioactive small molecules. ChEMBL provides a mapping of small molecule binding to Pfam-A domains and many users will be happy to rely on the provided mappings alone. However, ppdms offers the opportunity to review the mappings made available through the ChEMBL database. In addition, ppdms offers the opportunity to review cases that are not initially covered by the mapping available through ChEMBL: that of conflicting mappings, where multiple domains within the same protein can interact with small molecules. In ppdms, the user can decide to contribute as a curator to resolve such conflicting mappings. Resolved mappings from ppdms are regularly fed into the mapping available through ChEMBL. 
-        <h4>How to use ppdms</h4>
+        <h4>How the mapping works</h4>
+        <p> The mapping relies on a catalogue of Pfam-A domains that are known to mediate small molecule binding.
+        This catalogue was established in a <a href="http://www.biomedcentral.com/1471-2105/13/S17/S11">study </a> presented at InCoB2012 and later refined as described in my PhD thesis. 
+        This catalogue is the projected onto all protein targets in the ChEMBL database. As illustrated below, the projection can result in three different outcomes:
+        <ul>
+            <li> successful map to a single domain    </li>
+            <li> no map to any domain                 </li>
+            <li> conflicting maps to multiple domains </li>
+        </ul>
+        <img src="/static/pfam_maps/png/6ebd6c636e271d0f3c8a30bf4f9f5440.png"  height="250" width="550"/>
+        </p>
+        <h4>How ppdms mappings work</h4>
         <p>
-        You can review evidence of small molecule binding to Pfam-A domains in the <a href="/pfam_maps/evidence"><strong>Evidence</strong></a> section.
-            For each domain in the catalogue, small molecule bioactivities are retrieved from the database and presented in a graphic.
-            You can also review the manual assignemnts that were made by the curators in the <a href="/pfam_maps/resolved"><strong> Resolved</strong></a> section.
-            If you are a registered curator, you can log-in in the <a href="pfam_maps/accounts/profile/"><strong>User Profile</strong></a> section and assign mappings in the <a href="/pfam_maps/conflicts"><strong>Conflicts</strong></a> section.
-        Make sure to add a comment that helps others understand your assignemnt decision. </p> 
-
+        Very simple... well, almost very simple.
+        Initially, the mappings are assigned using the catalogue of privileged Pfam-A domains, as outlined in the figure above.
+        The mapping is applied to all activities that derive from binding or functional assays and have a pChEMBL value assigned to them.
+        The process assigns three flags to each activity, the <strong>status_flag</strong>, the <strong>manual_flag</strong>, and the <strong>category_flag</strong>.
+        The status_flag defines whether a given mapping is valid or not.
+        The manual flag defines whether a mapping has been curated manually or not.
+        The category flag defines the nature of the mapping, whether it was assigned successfully, or with conflict, or whether no mapping could be assigned to a given activity.
+        The manual_flag is on 0 by default and set to 1, when a manual assignment hass been made in the Conflicts section of ppdms, and back to 0 if the assignment has been revoked in the Resolved section.
+        In an independent release cycle, all mappings with a manual flag are exported and used to override the automatic mapping procedure. Thus they are perpetuated in subsequent releases of ppdms and ChEMBL.
+        </p>
+        <h4>ICanHazCode</h4>
+        Yes, check <a href="https://github.com/fak/pfam_maps"> github </a>.
 
      </div><!-- /.container -->
 
