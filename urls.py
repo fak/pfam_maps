@@ -19,6 +19,7 @@ urlpatterns = patterns('pfam_maps.views',
     url(r'^accounts/login/$', 'login_view', name= 'login'),
     url(r'^accounts/logout/$', 'logout_view', name= 'logout'),
     url(r'^accounts/profile/$', 'user_portal', name= 'user_portal'),
+    url(r'^about/$', 'about', name= 'about'),
     )
 
 urlpatterns += patterns('',
