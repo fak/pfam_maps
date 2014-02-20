@@ -288,6 +288,9 @@ def user_portal(request):
     c = {}
     return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
 
+def about(request):
+    return render_to_response('pfam_maps/about.html',context_instance=RequestContext(request))
+
 
 def logout_view(request):
     logout(request)
