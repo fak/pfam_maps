@@ -189,10 +189,6 @@ def conflicts(request, conflict_id):
     clash_arch = helper.arch_assays(data)
     try:
         arch_assays = clash_arch[conflict_id]
-        #out = open('test.txt','w')
-        #for ass in arch_assays:
-        #    out.write(ass + "', '")
-        #out.close()
     except KeyError:
         return render_to_response('pfam_maps/index.html',context_instance=RequestContext(request))
     assay_hier = {}
