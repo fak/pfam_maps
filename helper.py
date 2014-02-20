@@ -53,7 +53,7 @@ def get_assay_meta(assay_page):
             assay_page[assay_id]['pubmed'] =  pubmed_id
             assay_page[assay_id]['description'] = description
     metas = custom_sql("""
-    SELECT ass.chembl_id, pm.comment, pm.timestamp
+    SELECT ass.chembl_id, pm.comment, pm.timestamp, pm.submitter
         FROM activities act
         JOIN assays ass
           ON ass.assay_id = act.assay_id
@@ -64,6 +64,7 @@ def get_assay_meta(assay_page):
     assay_id = metas[0][0]
     assay_page[assay_id]['comment'] = metas[0][1]
     assay_page[assay_id]['timestamp'] = metas[0][2]
+    assay_page[assay_id]['submitter'] = metas[0][3]
     return assay_page
 
 
