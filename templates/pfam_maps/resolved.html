@@ -123,7 +123,7 @@
                 </p>
                 <div class="form-horizontal">
                     <form action="{% url 'revoke_assay' ass arch %}" method="post">{% csrf_token %}
-                        <input class="form" name="password" type="text" placeholder="Your comment here.">
+                        <input class="form" name="comment" type="text" placeholder="Your comment here.">
                         <button class="btn btn" type="submit" value="rand">Revoke</button>
                     </form>
                 </div>
