@@ -132,6 +132,7 @@ def vote_on_assay(request, conflict_id, assay_id):
         for entry in entries:
             entry.manual_flag = 1
             entry.comment = comment
+            entry.submitter = request.user.get_username()
             entry.timestamp = time.strftime('%d %B %Y %T', time.gmtime())
             if entry.compd_id == compd_id:
                 entry.status_flag = 0
@@ -164,6 +165,7 @@ def revoke_assay(request, conflict_id, assay_id):
             entry.status_flag = 1
             entry.comment = comment
             entry.timestamp = time.strftime('%d %B %Y %T', time.gmtime())
+            entry.submitter = request.user.get_username()
             entry.save()
     return HttpResponseRedirect(reverse('resolved', args=(conflict_id,)))
 
