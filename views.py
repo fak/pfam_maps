@@ -12,10 +12,16 @@ from django.contrib.auth import authenticate, login, logout
 
 
 def index(request):
-    c = {}
-    return render_to_response('pfam_maps/index.html',c, context_instance=RequestContext(request))
+    """
+    Return the ppdms start page.
+    """
+    return render_to_response('pfam_maps/index.html', context_instance=RequestContext(request))
 
 def evidence_portal(request):
+    """
+    Return the evidence portal page showing a summary of all pfam_a domains
+    with evidence for small molecule bining.
+    """
     data = helper.custom_sql('SELECT DISTINCT domain_name FROM pfam_maps', [])
     names = sorted([x[0] for x in data])
     c = Context({
@@ -25,6 +31,10 @@ def evidence_portal(request):
 
 
 def evidence(request, pfam_name):
+    """
+    Return the evidence page for individual Pfam-A domains. To improve
+    load times, only process the first 1500 query results.
+    """
     acts = helper.custom_sql("""
     SELECT DISTINCT act.standard_value, act.standard_units, act.standard_type, act.activity_id, act.molregno, single_domains.accession
     FROM pfam_maps pm
@@ -56,6 +66,10 @@ def evidence(request, pfam_name):
     return render_to_response('pfam_maps/evidence.html',c, context_instance=RequestContext(request))
 
 def conflicts_portal(request):
+    """
+    Return a summary of all conflicting architectures and provide some summary
+    stats.
+    """
     act_count = helper.custom_sql("""
     SELECT COUNT(DISTINCT activity_id) FROM pfam_maps WHERE category_flag = 0
     """, [])[0][0]
@@ -94,6 +108,10 @@ def conflicts_portal(request):
     return render_to_response('pfam_maps/conflict_portal.html',c, context_instance=RequestContext(request))
 
 def resolved_portal(request):
+    """
+    Return a summary of all conflicting architectures and provide some
+    summary stats.
+    """
     clash_arch = helper.custom_sql("""
     SELECT DISTINCT activity_id, domain_name FROM pfam_maps WHERE category_flag=2 AND manual_flag=1""", [])
     clash_arch = helper.process_arch(clash_arch)
@@ -106,6 +124,10 @@ def resolved_portal(request):
 
 
 def vote_on_assay(request, conflict_id, assay_id):
+    """
+    Commit changes specified in html form to database and return the next
+    conflict view, or start page, if n/a.
+    """
     if not request.user.is_authenticated():
         return render_to_response('pfam_maps/user_portal.html',context_instance=RequestContext(request))
     try:
@@ -138,10 +160,12 @@ def vote_on_assay(request, conflict_id, assay_id):
                 entry.status_flag = 0
             entry.save()
     return HttpResponseRedirect(reverse('conflicts', args=(conflict_id,)))
-    #c=  {}
-    #return render_to_response(reverse('conflicts', args=(conflict_id,)),c, context_instance=RequestContext(request))
 
 def revoke_assay(request, conflict_id, assay_id):
+    """
+    Commit a revoke instruction to the database, return next conflict or start
+    site, if n/a.
+    """
     if not request.user.is_authenticated():
         return render_to_response('pfam_maps/user_portal.html',context_instance=RequestContext(request))
     try:
@@ -172,6 +196,10 @@ def revoke_assay(request, conflict_id, assay_id):
 
 
 def conflicts(request, conflict_id):
+    """
+    Return page for individual assay. Show assay_id, description, pubmed_id,
+    assay target, edit time and domain structure.
+    """
     doms = conflict_id.split(' vs. ')
     placeholder = "%s"
     placeholder = ','.join([placeholder] * len(doms))
@@ -218,6 +246,10 @@ def conflicts(request, conflict_id):
 
 
 def resolved(request, conflict_id):
+    """
+    Return page for individual assay. Show assay_id, description, pubmed_id,
+    assay target, edit time and domain structure.
+    """
     doms = conflict_id.split(' vs. ')
     placeholder = "%s"
     placeholder = ','.join([placeholder] * len(doms))
@@ -262,44 +294,30 @@ def resolved(request, conflict_id):
     return render_to_response('pfam_maps/resolved.html',c, context_instance=RequestContext(request))
 
 
-def details(request, assay_id):
-    data = helper.custom_sql("""
-    SELECT DISTINCT act.molregno, md.chembl_id,  ass.chembl_id, ass.description
-        FROM activities act
-        JOIN assays ass
-          ON ass.assay_id = act.assay_id
-        JOIN molecule_dictionary md
-          ON md.molregno = act.molregno
-        WHERE assay_id = %s
-        """, [act])
-    mols = {}
-    for ent in data:
-        molregno = data[0]
-        m_chembl = data[1]
-        mols[molregno] = m_chembl
-    a_chembl = data[2]
-    desc = data[3]
-    c = {'mols'     : mols,
-         'ass_id'   : ass_id,
-         'desc'     : desc,
-        }
-    return render_to_response('pfam_maps/details_ebi.html',c,                          context_instance=RequestContext(request))
-
-
 def user_portal(request):
-    c = {}
-    return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
+    """
+    Return the user_portal template.
+    """
+    return render_to_response('pfam_maps/user_portal.html', context_instance=RequestContext(request))
 
 def about(request):
+    """
+    Return the About template.
+    """
     return render_to_response('pfam_maps/about.html',context_instance=RequestContext(request))
 
 
 def logout_view(request):
+    """
+    Log out user and return to the user_portal view.
+    """
     logout(request)
-    c=  {}
-    return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
+    return HttpResponseRedirect('../profile/')
 
 def login_view(request):
+    """
+    Log in user and return to the user_portal view.
+    """
     username = request.POST['username']
     password = request.POST['password']
     user = authenticate(username=username, password=password)
@@ -315,3 +333,38 @@ def login_view(request):
     else:
         # Return an 'invalid login' error message.
             return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
+
+def logs(request):
+    """
+    Show a log of manual asignments ordered by timestamp. Include a search field to identify assignments
+    based on user name or comment string.
+    """
+    query = """SELECT DISTINCT timestamp
+               FROM pfam_maps"""
+    data = helper.custom_sql(query, [])
+
+
+    return render_to_response('pfam_maps/user_portal.html',c,context_instance=RequestContext(request))
+
+#def details(request, assay_id):
+#    data = helper.custom_sql("""
+#    SELECT DISTINCT act.molregno, md.chembl_id,  ass.chembl_id, ass.description
+#        FROM activities act
+#        JOIN assays ass
+#          ON ass.assay_id = act.assay_id
+#        JOIN molecule_dictionary md
+#          ON md.molregno = act.molregno
+#        WHERE assay_id = %s
+#        """, [act])
+#    mols = {}
+#    for ent in data:
+#        molregno = data[0]
+#        m_chembl = data[1]
+#        mols[molregno] = m_chembl
+#    a_chembl = data[2]
+#    desc = data[3]
+#    c = {'mols'     : mols,
+#         'ass_id'   : ass_id,
+#         'desc'     : desc,
+#        }
+#    return render_to_response('pfam_maps/details_ebi.html',                       c,                          context_instance=RequestContext(request))
