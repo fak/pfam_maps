@@ -93,7 +93,7 @@
                     {% if arch_idx.number == idx %}
                         <li class=active><a href="?page= {{ idx }}"> {{ idx }} </a></li>
                     {% else %}
-                        <li><a href="?page= {{ idx }}"> {{ idx }} </a></li>
+                    <li><a href="?time={{tstamp}}&page= {{ idx }}"> {{ idx }} </a></li>
                     {% endif %}
                {% endfor %}
         </ul>

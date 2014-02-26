@@ -25,9 +25,7 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-
   <body>
-
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -44,45 +42,42 @@
             <li><a href="/pfam_maps/conflicts">Conflicts</a></li>
             <li><a href="/pfam_maps/resolved">Resolved</a></li>
             <li><a href="/pfam_maps/evidence">Evidence</a></li>
-            <li><a href="/pfam_maps/accounts/profile/">User Profile</a></li>
+            <li><a href="pfam_maps/accounts/profile/">User Profile</a></li>
             <li><a href="/pfam_maps/logs/entry/">Logs</a></li>
             <li><a href="/pfam_maps/about/">About</a></li>
           </ul>
           {% if user.is_authenticated %}
-      	    <p class="navbar-text pull-right"> signed in as {{ user.username }}.</p>
-    	  {% else %}
+            <p class="navbar-text pull-right"> signed in as {{ user.username }}.</p>
+          {% else %}
             <p class="navbar-text pull-right">Not logged in.</p>
           {% endif %}
-
         </div><!--/.nav-collapse -->
       </div>
     </div>
 
     <div class="container">
       <div class="starter-template">
-        <h1>ppdms</h1>
-        <p class="lead">Privileged Pfam-A domains mediate small molecule binding</p> 
-          {% if user.is_authenticated %}
-            <div class="form-horizontal">
-              <form action="{% url 'logout' %}" method="post">{%csrf_token%}
-                <button class="btn btn" type="submit" value="rand">Logout </button>
-              </form>
-            </div> 
-          {% else %}
-            {% block content %}
-  	      {% if form.errors %}
-                <p class="error">Sorry, that's not a valid username or password</p>
-              {% endif %}
-              <div class="form-horizontal">
-                <form action="{% url 'login' %}" method="post">{%csrf_token%}
-                  <input class="form" name="username" type="text" placeholder="user">
-                  <input class="form" name="password" type="password" placeholder="password">
-                  <button class="btn btn" type="submit"> Login </button>        
-                </form>
-              </div>
-            {% endblock %}
-          {% endif %}
-        </div>
+        <ul class="pagination pagination-sm">
+            {% for idx in log_idx.paginator.page_range %}
+                 {% if log_idx.number == idx %}
+                     <li class=active><a href="?page= {{ idx }}"> {{ idx }} </a></li>
+                 {% else %}
+                     <li><a href="?page= {{ idx }}"> {{ idx }} </a></li>
+                 {% endif %}
+            {% endfor %}
+        </ul>
+        {% if log_idx%}
+            <h3> Log of assigned mappings, by date: </h3>
+            <ul>
+            {% for tstamps in log_idx.object_list %}
+            <li><a href="/pfam_maps/logs/?time={{ tstamps.0 }}"> {{tstamps.0}} </a> -- <strong>{{tstamps.1}}</strong></li>
+            {% endfor %}
+            </ul>
+            Page {{ log_idx.number }} of {{ log_idx.paginator.num_pages }}.
+        {% else %}
+                <p>No index  available.</p>
+        {% endif %}
+      </div>
     </div><!-- /.container -->
 
 
@@ -93,4 +88,5 @@
     <script src="/static/pfam_maps/dist/js/bootstrap.min.js"></script>
   </body>
 </html>
+
 
