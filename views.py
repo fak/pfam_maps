@@ -334,17 +334,78 @@ def login_view(request):
         # Return an 'invalid login' error message.
             return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
 
-def logs(request):
+def logs_entry(request):
     """
     Show a log of manual asignments ordered by timestamp. Include a search field to identify assignments
     based on user name or comment string.
     """
-    query = """SELECT DISTINCT timestamp
-               FROM pfam_maps"""
-    data = helper.custom_sql(query, [])
+    query = """SELECT DISTINCT timestamp, submitter
+               FROM pfam_maps
+               WHERE manual_flag = 1"""
+    logs = helper.custom_sql(query, [])
+    logs_t = [(time.strptime(tt[0],'%d %B %Y %H:%M:%S'), tt[1]) for tt in logs]
+    logs_t = sorted(logs_t, key=lambda x: x[0], reverse=True)
+    logs = [(time.strftime('%d %B %Y %H:%M:%S', tt[0]), tt[1]) for tt in logs_t]
+    paginator = Paginator(logs, 50)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    try:
+        log_idx = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        log_idx = paginator.page(paginator.num_pages)
+    c = {
+         'log_idx'  : log_idx,
+        }
+    return render_to_response('pfam_maps/logs_entry.html',c, context_instance=RequestContext(request))
+
+def logs(request):
+    """
+    Return page for individual assay. Show assay_id, description, pubmed_id,
+    assay target, edit time and domain structure.
+    """
+    tstamp  = request.GET.get('time','')
+    query = """
+    SELECT DISTINCT pm.domain_name, ass.chembl_id
+        FROM pfam_maps pm
+        JOIN activities act
+          ON act.activity_id = pm.activity_id
+        JOIN assays ass
+          ON act.assay_id = ass.assay_id
+          WHERE manual_flag = 1
+          AND category_flag = 2
+          AND timestamp LIKE '%s'
+        """ % tstamp
+    data = helper.custom_sql(query, tstamp)
+    clash_arch = helper.arch_assays(data)
+    conflict_id = clash_arch.keys()[0]
+    arch_assays = clash_arch[conflict_id]
+    assay_hier = {}
+    for ass_id in arch_assays:
+        assay_hier[ass_id] = {}
+    paginator = Paginator(assay_hier.keys(), 1)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    try:
+        arch_idx = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        arch_idx = paginator.page(paginator.num_pages)
+    assay_hier_page = dict((k, assay_hier[k]) for k in arch_idx.object_list)
+    assay_hier_page = helper.get_assay_meta(assay_hier_page)
+    assay_hier_page = helper.get_pfam_arch(assay_hier_page)
+    dom_l = conflict_id.split(' vs. ')
+    c = {'arch'         : conflict_id,
+         'assay_hier'   : assay_hier_page,
+         'doms'         : dom_l,
+         'arch_idx'     : arch_idx,
+         'tstamp'       : tstamp,
+        }
+    return render_to_response('pfam_maps/logs.html',c, context_instance=RequestContext(request))
 
 
-    return render_to_response('pfam_maps/user_portal.html',c,context_instance=RequestContext(request))
 
 #def details(request, assay_id):
 #    data = helper.custom_sql("""
