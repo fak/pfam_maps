@@ -16,10 +16,6 @@ def custom_sql(query, params):
 
 def get_assay_meta(assay_page):
     assay_1 = assay_page.keys()[0]
-    try:
-        assay_2 = assay_page.keys()[1]
-    except IndexError:
-        assay_2 = 'This string is not a foreign key in the assays table'
     metas = custom_sql("""
     SELECT DISTINCT ass.chembl_id, dcs.pubmed_id, cs.accession, td.pref_name,
             ass.description
@@ -34,8 +30,8 @@ def get_assay_meta(assay_page):
           ON tc.tid = td.tid
         JOIN component_sequences cs
           ON tc.component_id = cs.component_id
-        WHERE ass.chembl_id IN (%s, %s)
-        """, [assay_1, assay_2 ])
+        WHERE ass.chembl_id = %s
+        """, [assay_1])
     component_d = {}
     pref_name_d = {}
     pubmed_d = {}
@@ -59,8 +55,8 @@ def get_assay_meta(assay_page):
           ON ass.assay_id = act.assay_id
         JOIN pfam_maps pm
           ON pm.activity_id = act.activity_id
-        WHERE ass.chembl_id IN (%s, %s) LIMIT 1
-        """, [assay_1, assay_2 ])
+        WHERE ass.chembl_id = %s LIMIT 1
+        """, [assay_1])
     assay_id = metas[0][0]
     assay_page[assay_id]['comment'] = metas[0][1]
     assay_page[assay_id]['timestamp'] = metas[0][2]
