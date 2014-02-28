@@ -334,7 +334,7 @@ def login_view(request):
         # Return an 'invalid login' error message.
             return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
 
-def logs_entry(request):
+def logs_portal(request):
     """
     Show a log of manual asignments ordered by timestamp. Include a search field to identify assignments
     based on user name or comment string.
@@ -358,7 +358,7 @@ def logs_entry(request):
     c = {
          'log_idx'  : log_idx,
         }
-    return render_to_response('pfam_maps/logs_entry.html',c, context_instance=RequestContext(request))
+    return render_to_response('pfam_maps/logs_portal.html',c, context_instance=RequestContext(request))
 
 def logs(request):
     """
@@ -407,25 +407,3 @@ def logs(request):
 
 
 
-#def details(request, assay_id):
-#    data = helper.custom_sql("""
-#    SELECT DISTINCT act.molregno, md.chembl_id,  ass.chembl_id, ass.description
-#        FROM activities act
-#        JOIN assays ass
-#          ON ass.assay_id = act.assay_id
-#        JOIN molecule_dictionary md
-#          ON md.molregno = act.molregno
-#        WHERE assay_id = %s
-#        """, [act])
-#    mols = {}
-#    for ent in data:
-#        molregno = data[0]
-#        m_chembl = data[1]
-#        mols[molregno] = m_chembl
-#    a_chembl = data[2]
-#    desc = data[3]
-#    c = {'mols'     : mols,
-#         'ass_id'   : ass_id,
-#         'desc'     : desc,
-#        }
-#    return render_to_response('pfam_maps/details_ebi.html',                       c,                          context_instance=RequestContext(request))
