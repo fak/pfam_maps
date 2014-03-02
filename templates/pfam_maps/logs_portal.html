@@ -42,8 +42,8 @@
             <li><a href="/pfam_maps/conflicts">Conflicts</a></li>
             <li><a href="/pfam_maps/resolved">Resolved</a></li>
             <li><a href="/pfam_maps/evidence">Evidence</a></li>
-            <li><a href="pfam_maps/accounts/profile/">User Profile</a></li>
-            <li><a href="/pfam_maps/logs/entry/">Logs</a></li>
+            <li><a href="/pfam_maps/accounts/profile/">User Profile</a></li>
+            <li><a href="/pfam_maps/logs/portal/">Logs</a></li>
             <li><a href="/pfam_maps/about/">About</a></li>
           </ul>
           {% if user.is_authenticated %}
@@ -57,15 +57,18 @@
 
     <div class="container">
       <div class="starter-template">
-        <ul class="pagination pagination-sm">
-            {% for idx in log_idx.paginator.page_range %}
-                 {% if log_idx.number == idx %}
-                     <li class=active><a href="?page= {{ idx }}"> {{ idx }} </a></li>
-                 {% else %}
-                     <li><a href="?page= {{ idx }}"> {{ idx }} </a></li>
-                 {% endif %}
-            {% endfor %}
-        </ul>
+        <h3> Query the log of assigned mappings </h3> 
+        <form action="{% url 'query_logs' %}" method="post">{%csrf_token%}
+            <div class="form-group">
+                <label>Query by assigned comment</label>
+                <input class="form-control" name="comment" type="text" placeholder=".*" hint="comment contains">
+            </div>
+            <div class="form-group">
+                <label>Query by user submitting the assignment</label>
+                <input class="form-control" name="submitter" type="text" placeholder=".*" hint="submitter">
+            </div>
+            <button class="btn btn" type="submit"> Submit query </button>
+        </form>
         {% if log_idx%}
             <h3> Log of assigned mappings, by date: </h3>
             <ul>
@@ -77,6 +80,15 @@
         {% else %}
                 <p>No index  available.</p>
         {% endif %}
+        <ul class="pagination pagination-sm">
+            {% for idx in log_idx.paginator.page_range %}
+                 {% if log_idx.number == idx %}
+                     <li class=active><a href="?page= {{ idx }}"> {{ idx }} </a></li>
+                 {% else %}
+                     <li><a href="?page= {{ idx }}"> {{ idx }} </a></li>
+                 {% endif %}
+            {% endfor %}
+        </ul>
       </div>
     </div><!-- /.container -->
 

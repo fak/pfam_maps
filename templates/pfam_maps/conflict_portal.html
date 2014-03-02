@@ -45,7 +45,7 @@
             <li><a href="/pfam_maps/resolved">Resolved</a></li>
             <li><a href="/pfam_maps/evidence">Evidence</a></li>
             <li><a href="/pfam_maps/accounts/profile/">User Profile</a></li>
-            <li><a href="/pfam_maps/logs/entry/">Logs</a></li>
+            <li><a href="/pfam_maps/logs/portal/">Logs</a></li>
             <li><a href="/pfam_maps/about/">About</a></li>
           </ul>
           {% if user.is_authenticated %}
@@ -62,7 +62,7 @@
       <div class="starter-template">
         <h1>ppdms</h1>
         <p class="lead">Privileged Pfam-A domains mediate small molecule binding</p> 
-	<p> There are {{ act_count }} activities that could be mapped without conflicts. These are activities from binding assays of the type 'Ki', 'Kd', 'IC50', 'EC50' or logarithmic conversions thereof. In theory, the mapping could be extended to other activity types, as long   as the mapping to the target is a direct mapping in the assay.</p>
+        <p> There are {{ act_count }} activities that could be mapped without conflicts. These are activities from binding assays that have an associated <strong> pChEMBL </strong> value. In theory, the mapping could be extended to other activity types, as long as the mapping to the target is a direct mapping in the assay.</p>
         <p> There are {{ clash_count }} activities where the mapping defaulted to more than one domain type. Of these, {{ man_count }} have been manually resolved.</p>
          <ul>
              {% for name, count in clash_arch.items %}
