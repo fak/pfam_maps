@@ -218,29 +218,25 @@ def conflicts(request, conflict_id):
     data = helper.custom_sql(query, doms)
     clash_arch = helper.arch_assays(data)
     try:
-        arch_assays = clash_arch[conflict_id]
+        assays = clash_arch[conflict_id]
     except KeyError:
         return render_to_response('pfam_maps/index.html',context_instance=RequestContext(request))
-    assay_hier = {}
-    for ass_id in arch_assays:
-        assay_hier[ass_id] = {}
-    paginator = Paginator(assay_hier.keys(), 1)
+    paginator = Paginator(assays, 1)
+    page = int(request.GET.get('page', '1'))
     try:
-        page = int(request.GET.get('page', '1'))
-    except ValueError:
-        page = 1
-    try:
-        arch_idx = paginator.page(page)
+        page_idx = paginator.page(page)
     except (EmptyPage, InvalidPage):
-        arch_idx = paginator.page(paginator.num_pages)
-    assay_hier_page = dict((k, assay_hier[k]) for k in arch_idx.object_list)
-    assay_hier_page = helper.get_assay_meta(assay_hier_page)
-    assay_hier_page = helper.get_pfam_arch(assay_hier_page)
+        page_idx = paginator.page(paginator.num_pages)
+    assay_id = page_idx.object_list[0]
+    assay_page = helper.get_assay_meta(assay_id)
+    assay_page = helper.get_pfam_arch(assay_page)
     dom_l = conflict_id.split(' vs. ')
-    c = {'arch'         : conflict_id,
-         'assay_hier'   : assay_hier_page,
+    c = {
+         'ass'          : assay_id,
+         'arch'         : conflict_id,
+         'assay_page'   : assay_page,
          'doms'         : dom_l,
-         'arch_idx'     : arch_idx
+         'page_idx'     : page_idx,
         }
     return render_to_response('pfam_maps/conflict.html',c, context_instance=RequestContext(request))
 
@@ -267,29 +263,25 @@ def resolved(request, conflict_id):
     data = helper.custom_sql(query, doms)
     clash_arch = helper.arch_assays(data)
     try:
-        arch_assays = clash_arch[conflict_id]
+        assays = clash_arch[conflict_id]
     except KeyError:
         return render_to_response('pfam_maps/index.html',context_instance=RequestContext(request))
-    assay_hier = {}
-    for ass_id in arch_assays:
-        assay_hier[ass_id] = {}
-    paginator = Paginator(assay_hier.keys(), 1)
+    paginator = Paginator(assays, 1)
+    page = int(request.GET.get('page', '1'))
     try:
-        page = int(request.GET.get('page', '1'))
-    except ValueError:
-        page = 1
-    try:
-        arch_idx = paginator.page(page)
+        page_idx = paginator.page(page)
     except (EmptyPage, InvalidPage):
-        arch_idx = paginator.page(paginator.num_pages)
-    assay_hier_page = dict((k, assay_hier[k]) for k in arch_idx.object_list)
-    assay_hier_page = helper.get_assay_meta(assay_hier_page)
-    assay_hier_page = helper.get_pfam_arch(assay_hier_page)
+        page_idx = paginator.page(paginator.num_pages)
+    assay_id = page_idx.object_list[0]
+    assay_page = helper.get_assay_meta(assay_id)
+    assay_page = helper.get_pfam_arch(assay_page)
     dom_l = conflict_id.split(' vs. ')
-    c = {'arch'         : conflict_id,
-         'assay_hier'   : assay_hier_page,
+    c = {
+         'ass'          : assay_id,
+         'arch'         : conflict_id,
+         'assay_page'   : assay_page,
          'doms'         : dom_l,
-         'arch_idx'     : arch_idx
+         'page_idx'     : page_idx,
         }
     return render_to_response('pfam_maps/resolved.html',c, context_instance=RequestContext(request))
 
@@ -379,31 +371,75 @@ def logs(request):
         """ % tstamp
     data = helper.custom_sql(query, tstamp)
     clash_arch = helper.arch_assays(data)
-    conflict_id = clash_arch.keys()[0]
-    arch_assays = clash_arch[conflict_id]
-    assay_hier = {}
-    for ass_id in arch_assays:
-        assay_hier[ass_id] = {}
-    paginator = Paginator(assay_hier.keys(), 1)
+    assays = {}
+    for arch in clash_arch:
+        for ass_id in clash_arch[arch]:
+            assays[ass_id] = arch
+    paginator = Paginator(assays.keys(), 1)
+    page = int(request.GET.get('page', '1'))
     try:
-        page = int(request.GET.get('page', '1'))
-    except ValueError:
-        page = 1
-    try:
-        arch_idx = paginator.page(page)
+        page_idx = paginator.page(page)
     except (EmptyPage, InvalidPage):
-        arch_idx = paginator.page(paginator.num_pages)
-    assay_hier_page = dict((k, assay_hier[k]) for k in arch_idx.object_list)
-    assay_hier_page = helper.get_assay_meta(assay_hier_page)
-    assay_hier_page = helper.get_pfam_arch(assay_hier_page)
+        page_idx = paginator.page(paginator.num_pages)
+    assay_id = page_idx.object_list[0]
+    assay_page = helper.get_assay_meta(assay_id)
+    assay_page = helper.get_pfam_arch(assay_page)
+    conflict_id = assays[assay_id]
     dom_l = conflict_id.split(' vs. ')
-    c = {'arch'         : conflict_id,
-         'assay_hier'   : assay_hier_page,
+    c = {
+         'ass'          : assay_id,
+         'arch'         : conflict_id,
+         'assay_page'   : assay_page,
          'doms'         : dom_l,
-         'arch_idx'     : arch_idx,
+         'page_idx'     : page_idx,
          'tstamp'       : tstamp,
         }
     return render_to_response('pfam_maps/logs.html',c, context_instance=RequestContext(request))
 
 
-
+def query_logs(request):
+    """
+    Query the pfam_maps table for query terms provided by the user and return the entries.
+    """
+    try:
+        request.session['submitter'] = request.POST['submitter']
+        request.session['comment']=request.POST['comment']
+    except KeyError:
+        pass
+    query = """
+    SELECT DISTINCT pm.domain_name, ass.chembl_id
+        FROM pfam_maps pm
+        JOIN activities act
+          ON act.activity_id = pm.activity_id
+        JOIN assays ass
+          ON act.assay_id = ass.assay_id
+          WHERE manual_flag = 1
+          AND category_flag = 2
+          AND submitter ~ %s
+          AND comment ~ %s
+        """
+    data = helper.custom_sql(query, [request.session['submitter'], request.session['comment']])
+    clash_arch = helper.arch_assays(data)
+    assays = {}
+    for arch in clash_arch.keys():
+        for ass_id in clash_arch[arch]:
+            assays[ass_id] = arch
+    paginator = Paginator(assays.keys(), 1)
+    page = int(request.GET.get('page', '1'))
+    try:
+        page_idx = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        page_idx = paginator.page(paginator.num_pages)
+    assay_id = page_idx.object_list[0]
+    assay_page = helper.get_assay_meta(assay_id)
+    assay_page = helper.get_pfam_arch(assay_page)
+    conflict_id = assays[assay_id]
+    dom_l = conflict_id.split(' vs. ')
+    c = {
+         'ass'          : assay_id,
+         'arch'         : conflict_id,
+         'assay_page'   : assay_page,
+         'doms'         : dom_l,
+         'arch_idx'     : page_idx,
+        }
+    return render_to_response('pfam_maps/query_logs.html',c, context_instance=RequestContext(request))
