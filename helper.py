@@ -14,8 +14,8 @@ def custom_sql(query, params):
 
 
 
-def get_assay_meta(assay_page):
-    assay_1 = assay_page.keys()[0]
+def get_assay_meta(assay_1):
+    #assay_1 = assay_page.keys()[0]
     metas = custom_sql("""
     SELECT DISTINCT ass.chembl_id, dcs.pubmed_id, cs.accession, td.pref_name,
             ass.description
@@ -35,6 +35,7 @@ def get_assay_meta(assay_page):
     component_d = {}
     pref_name_d = {}
     pubmed_d = {}
+    assay_page = {}
     for meta in metas:
         assay_id =  str(meta[0])
         pubmed_id =  meta[1]
@@ -42,12 +43,12 @@ def get_assay_meta(assay_page):
         pref_name = meta[3]
         description = meta[4]
         try:
-            assay_page[assay_id]['components'].append(uniprot)
+            assay_page['components'].append(uniprot)
         except KeyError:
-            assay_page[assay_id]['components'] =  [uniprot]
-            assay_page[assay_id]['pref_name']= pref_name
-            assay_page[assay_id]['pubmed'] =  pubmed_id
-            assay_page[assay_id]['description'] = description
+            assay_page['components'] =  [uniprot]
+            assay_page['pref_name']= pref_name
+            assay_page['pubmed'] =  pubmed_id
+            assay_page['description'] = description
     metas = custom_sql("""
     SELECT ass.chembl_id, pm.comment, pm.timestamp, pm.submitter
         FROM activities act
@@ -58,22 +59,21 @@ def get_assay_meta(assay_page):
         WHERE ass.chembl_id = %s LIMIT 1
         """, [assay_1])
     assay_id = metas[0][0]
-    assay_page[assay_id]['comment'] = metas[0][1]
-    assay_page[assay_id]['timestamp'] = metas[0][2]
-    assay_page[assay_id]['submitter'] = metas[0][3]
+    assay_page['comment'] = metas[0][1]
+    assay_page['timestamp'] = metas[0][2]
+    assay_page['submitter'] = metas[0][3]
     return assay_page
 
 
 def get_pfam_arch(assay_page):
-    for ass in assay_page.keys():
-        for uniprot in assay_page[ass]['components']:
-            r = requests.get('http://pfam.sanger.ac.uk/protein/%s/graphic'% uniprot)
-            doms = r.content
-            #doms = '[{"length":"950","regions":[{"colour":"#2dcf00", "endStyle":"jagged","end":"361","startStyle":"jagged","text":"Peptidase_S8","href":"/family/PF00082","type":"pfama","start": "159"},]}]' #this would be an example of a pfam-architecture obtained in this way.
-            try:
-                assay_page[ass]['pfam_archs'].append(doms)
-            except KeyError:
-                assay_page[ass]['pfam_archs']=[doms]
+    for uniprot in assay_page['components']:
+        r = requests.get('http://pfam.sanger.ac.uk/protein/%s/graphic'% uniprot)
+        doms = r.content
+        #doms = '[{"length":"950","regions":[{"colour":"#2dcf00", "endStyle":"jagged","end":"361","startStyle":"jagged","text":"Peptidase_S8","href":"/family/PF00082","type":"pfama","start": "159"},]}]' #this would be an example of a pfam-architecture obtained in this way.
+        try:
+            assay_page['pfam_archs'].append(doms)
+        except KeyError:
+                assay_page['pfam_archs']=[doms]
     return assay_page
 
 
