@@ -77,6 +77,16 @@ def get_pfam_arch(assay_page):
     return assay_page
 
 
+def perc(x,y):
+    """
+    Return a formatted version of x and a percentage of x over y.
+    """
+    x_form  = "{:,.1f}".format(x)
+    y_form = "{0:.2f}".format(100 * np.true_divide(x, y))
+    return x_form, y_form
+
+
+
 def standardize_acts(acts):
     std_acts = []
     lkp = {}
