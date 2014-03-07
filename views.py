@@ -65,7 +65,7 @@ def evidence(request, pfam_name):
         })
     return render_to_response('pfam_maps/evidence.html',c, context_instance=RequestContext(request))
 
-def conflicts_portal(request):
+def conflict_portal(request):
     """
     Return a summary of all conflicting architectures and provide some summary
     stats.
@@ -292,11 +292,150 @@ def user_portal(request):
     """
     return render_to_response('pfam_maps/user_portal.html', context_instance=RequestContext(request))
 
+
 def about(request):
     """
     Return the About template.
     """
-    return render_to_response('pfam_maps/about.html',context_instance=RequestContext(request))
+    n_total = helper.custom_sql("""
+    SELECT COUNT(DISTINCT activity_id)
+    FROM activities act
+    JOIN assays ass
+      ON ass.assay_id = act.assay_id
+    JOIN target_dictionary td
+      ON ass.tid = td.tid
+    WHERE act.pchembl_value IS NOT NULL
+    AND ass.assay_type IN('B', 'F')
+    AND td.target_type IN('PROTEIN COMPLEX', 'SINGLE PROTEIN')
+    AND ass.relationship_type = 'D'
+    """, [])[0][0]
+    n_mapped = helper.custom_sql("""
+    SELECT COUNT(DISTINCT activity_id) FROM pfam_maps
+    """, [])[0][0]
+    n_straight = helper.custom_sql("""
+    SELECT COUNT(DISTINCT activity_id) FROM pfam_maps
+    WHERE category_flag = 0
+    """, [])[0][0]
+    n_ambigs = helper.custom_sql("""
+    SELECT COUNT(DISTINCT activity_id) FROM pfam_maps
+    WHERE category_flag = 1
+    """, [])[0][0]
+    n_confl = helper.custom_sql("""
+    SELECT COUNT(DISTINCT activity_id) FROM pfam_maps
+    WHERE category_flag = 2
+            """, [])[0][0]
+    n_res = helper.custom_sql("""
+    SELECT COUNT(DISTINCT activity_id) FROM pfam_maps
+    WHERE manual_flag = 1
+    """, [])[0][0]
+    n_none = n_total - n_mapped
+    n_confl_comb = n_confl + n_ambigs
+    n_unres = n_confl - n_res
+    n_none = n_total - n_mapped
+    n_confl_comb = n_confl + n_ambigs
+    n_unres = n_confl - n_res
+    c = Context({
+        'n_total'   : helper.perc(n_total, n_total),
+        'n_none'    : helper.perc(n_none, n_total),
+        'n_mapped'  : helper.perc(n_mapped, n_total),
+        'n_straight': helper.perc(n_straight, n_total),
+        'n_ambigs'  : helper.perc(n_ambigs, n_confl_comb),
+        'n_confl'   : helper.perc(n_confl, n_total),
+        'n_confl_comb': helper.perc(n_confl_comb, n_total),
+        'n_res'     : helper.perc(n_res, n_confl_comb),
+        'n_unres'   : helper.perc(n_unres, n_confl_comb),
+        })
+    return render_to_response('pfam_maps/about.html', c, context_instance=RequestContext(request))
+
+
+def altenative_about(request):
+    """
+    Return an alternative About template that summarises ACTIVE activities.
+    This takes a lot longer to query and is therefore inactive by default. If
+    you want to use it, switch view names about <-> alternative_about.
+    """
+    n_total = helper.custom_sql("""
+    SELECT COUNT(DISTINCT activity_id)
+    FROM activities act
+    JOIN assays ass
+      ON ass.assay_id = act.assay_id
+    JOIN target_dictionary td
+      ON ass.tid = td.tid
+    WHERE act.pchembl_value IS NOT NULL
+    AND ass.assay_type IN('B')
+    AND td.target_type IN('PROTEIN COMPLEX', 'SINGLE PROTEIN')
+    AND ass.relationship_type = 'D'
+    AND act.pchembl_value > 5
+    """, [])[0][0]
+    n_mapped = helper.custom_sql("""
+    SELECT COUNT(DISTINCT pm.activity_id)
+    FROM pfam_maps pm
+    JOIN activities act
+    ON pm.activity_id = act.activity_id
+    JOIN assays ass
+      ON ass.assay_id = act.assay_id
+    WHERE ass.assay_type IN('B')
+    AND act.pchembl_value > 5
+    """, [])[0][0]
+    n_straight = helper.custom_sql("""
+    SELECT COUNT(DISTINCT pm.activity_id)
+    FROM pfam_maps pm
+    JOIN activities act
+    ON pm.activity_id = act.activity_id
+    JOIN assays ass
+      ON ass.assay_id = act.assay_id
+    WHERE ass.assay_type IN('B')
+    AND category_flag = 0
+    AND act.pchembl_value > 5
+    """, [])[0][0]
+    n_ambigs = helper.custom_sql("""
+    SELECT COUNT(DISTINCT pm.activity_id)
+    FROM pfam_maps pm
+    JOIN activities act
+    ON pm.activity_id = act.activity_id
+    JOIN assays ass
+      ON ass.assay_id = act.assay_id
+    WHERE ass.assay_type IN('B')
+    AND category_flag = 1
+    AND act.pchembl_value > 5
+    """, [])[0][0]
+    n_confl = helper.custom_sql("""
+    SELECT COUNT(DISTINCT pm.activity_id)
+    FROM pfam_maps pm
+    JOIN activities act
+    ON pm.activity_id = act.activity_id
+    JOIN assays ass
+      ON ass.assay_id = act.assay_id
+    WHERE ass.assay_type IN('B')
+    AND category_flag = 2
+    AND act.pchembl_value > 5
+            """, [])[0][0]
+    n_res = helper.custom_sql("""
+    SELECT COUNT(DISTINCT pm.activity_id)
+    FROM pfam_maps pm
+    JOIN activities act
+    ON pm.activity_id = act.activity_id
+    JOIN assays ass
+      ON ass.assay_id = act.assay_id
+    WHERE ass.assay_type IN('B')
+    AND manual_flag = 1
+    AND act.pchembl_value > 5
+    """, [])[0][0]
+    n_none = n_total - n_mapped
+    n_confl_comb = n_confl + n_ambigs
+    n_unres = n_confl - n_res
+    c = Context({
+        'n_total'   : helper.perc(n_total, n_total),
+        'n_none'    : helper.perc(n_none, n_total),
+        'n_mapped'  : helper.perc(n_mapped, n_total),
+        'n_straight': helper.perc(n_straight, n_total),
+        'n_ambigs'  : helper.perc(n_ambigs, n_confl_comb),
+        'n_confl'   : helper.perc(n_confl, n_total),
+        'n_confl_comb': helper.perc(n_confl_comb, n_total),
+        'n_res'     : helper.perc(n_res, n_confl_comb),
+        'n_unres'   : helper.perc(n_unres, n_confl_comb),
+        })
+    return render_to_response('pfam_maps/about.html', c, context_instance=RequestContext(request))
 
 
 def logout_view(request):
