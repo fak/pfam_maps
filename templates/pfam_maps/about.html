@@ -66,16 +66,75 @@
             <p>Welcome to ppdms - a platform that facilitates manual refinements of a mapping of small molecule binding to Pfam-A domains. The mapping aims to link measurements of small molecule bioactivity stored in the ChEMBL database to regions within a given protein that are are described by Pfam-A domains. By associating bioactivity with a protein domain, rather than the whole length protein, the mapping enables meaningful alignments of drug targets and ligand-fishing approaches. </p>
         </div>
         <h4>How the mapping works</h4>
-        <p> The mapping relies on a catalogue of Pfam-A domains that are known to mediate small molecule binding.
-        This catalogue was established in a <a href="http://www.biomedcentral.com/1471-2105/13/S17/S11">study </a> presented at InCoB2012 and later refined as described in my PhD thesis. 
-        This catalogue is the projected onto all protein targets in the ChEMBL database. As illustrated below, the projection can result in three different outcomes:
-        <ul>
-            <li> successful map to a single domain    </li>
-            <li> no map to any domain                 </li>
-            <li> conflicting maps to multiple domains </li>
-        </ul>
-        <img src="/static/pfam_maps/png/6ebd6c636e271d0f3c8a30bf4f9f5440.png"  height="250" width="550"/>
+        <p> 
+            The mapping relies on a catalogue of Pfam-A domains that are known to mediate  
+            small molecule binding.
+            This catalogue was established in a <a href="http://www.biomedcentral.com/1471-2105/13/S17/S11">study </a> presented at InCoB2012 and later refined as described in my PhD thesis. 
+            This catalogue is the projected onto all protein targets in the ChEMBL database.
+            As illustrated below, the projection can result in three different outcomes:
+            <ul>
+                <li> successful map to a single domain    </li>
+                <li> no map to any domain                 </li>
+                <li> conflicting maps to multiple domains </li>
+            </ul>
+            <img src="/static/pfam_maps/png/6ebd6c636e271d0f3c8a30bf4f9f5440.png"  height="250" width="550"/>
         </p>
+        <p> The table below summarises how activities in the current release distribute over the three possible outcomes. Note that this summary is for activities from both functional and binding assays with an assigned pChEMBL value. </p>
+        <table class="table table-striped" style=width:300px>
+         <tr>
+             <th> Outcome</th>
+             <th> # </th>
+             <th> % </th>
+         </tr>
+         <tr>
+             <td> i) Successfully mapped</td>
+             <td> {{ n_straight.0}} </td>
+             <td>{{ n_straight.1  }}</td>
+         </tr>
+         <tr>
+             <td> ii) Not mapped</td>
+             <td> {{ n_none.0}} </td>
+             <td>{{ n_none.1}}</td>
+         </tr>
+         <tr>
+             <td>i) Conflicting map</td>
+             <td> {{ n_confl_comb.0}} </td>
+             <td>{{ n_confl_comb.1  }}</td>
+         </tr>
+         <tr>
+             <td> <strong> Total </strong></td>
+             <td> {{ n_total.0}} </td>
+             <td> 100 </td>
+         </tr>
+     </table>
+     <p> The table below presents a breakdown of activities that have been assigned to more than one domain. 'Ambiguous' means that the activity was mapped to more than one domain of the same type. At the momemt, ppdms does not offer a method to resolve uch mappings.</p>
+        <table class="table table-striped" style=width:300px>
+         <tr>
+             <th> Conflicting maps</th>
+             <th> # </th>
+             <th> % </th>
+         </tr>
+         <tr>
+             <td> resolved </td>
+             <td> {{ n_res.0}} </td>
+             <td>{{ n_res.1  }}</td>
+         </tr>
+         <tr>
+             <td> ambiguous </td>
+             <td> {{ n_ambigs.0}} </td>
+             <td>{{ n_ambigs.1}}</td>
+         </tr>
+         <tr>
+             <td> unresolved </td>
+             <td> {{ n_unres.0}} </td>
+             <td>{{ n_unres.1  }}</td>
+         </tr>
+         <tr>
+             <td> <strong> Total </strong></td>
+             <td> {{ n_confl_comb.0}} </td>
+             <td> 100 </td>
+         </tr>
+        </table> 
         <h4>How ppdms mappings work</h4>
         <p>
         Very simple... well, almost very simple.
@@ -89,7 +148,7 @@
         In an independent release cycle, all mappings with a manual flag are exported and used to override the automatic mapping procedure. Thus they are perpetuated in subsequent releases of ppdms and ChEMBL.
         </p>
         <h4>ICanHazCode</h4>
-        Yes, check <a href="https://github.com/fak/pfam_maps"> github </a>.
+        Yes, there is a repo on <a href="https://github.com/fak/pfam_maps"> github </a>.
 
      </div><!-- /.container -->
 
