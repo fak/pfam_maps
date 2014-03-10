@@ -68,14 +68,26 @@
         <p class="lead" data-toggle="tooltip" id='test'>Privileged Pfam-A domains mediate small molecule binding</p> 
         <h3> {{ pfam_name }} </h3>
         {% if top_mols and top_acts  %}
-            <p> Shown below are measured interactions of the {{ pfam_name }} Pfam-A domain with small molecules. Each point represents a measurement. There is currently a limit of   ten on the number of displayed molecules. The total number of activities for this domain type in ChEMBL is {{ n_acts }}. For some Pfam-A domains, such as 7tm_1, there will be   many more compounds.</p>
+        <p> Shown below are measured interactions of the {{ pfam_name }} Pfam-A domain with small molecules. Each point represents a measurement. There is currently a limit of ten on the number of displayed molecules. The total number of activities for this domain type in ChEMBL is {{ n_acts }}. For some Pfam-A domains, such as 7tm_1, there will be many more compounds.</p>
+        
         {% else %}
             <p>No index  available.</p>
         {% endif %}
         <div id="anks">
           <script type="text/javascript" src="/static/pfam_maps/js/scatterplot.js"></script>
         </div>
-      </div>
+        <p> If the plot above shows no activities, you have come across a case where the evidence for small molecule does not come from ChEMBL but from the literature. Cited below are {{cits|length}} articles that demonstrate the {{pfam_name}} domain capability of binding small molecules. </p>
+        <ul>
+            {% for cit in cits %}
+            <li>
+                <em>{{cit.title}}</em> <br> 
+                {{cit.authorString}} <br> 
+                <strong>{{cit.journalTitle}}</strong>, ({{cit.pubYear}}) <br> 
+                <a href='http://dx.doi.org/{{cit.doi}}' target="_blank">{{cit.doi}}</a>
+            </li>
+            {% endfor %}                          
+        </ul>
+        </div>
     </div><!-- /.container -->
 
 
