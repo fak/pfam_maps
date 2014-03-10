@@ -1,5 +1,5 @@
 from django.template import Context, loader, RequestContext
-from pfam_maps.models import PfamMaps
+from pfam_maps.models import PfamMaps, ValidDomains
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
@@ -35,6 +35,10 @@ def evidence(request, pfam_name):
     Return the evidence page for individual Pfam-A domains. To improve
     load times, only process the first 1500 query results.
     """
+    dois = ValidDomains.objects.filter(domain_name=pfam_name)
+    cits = []
+    for doi in dois:
+        cits.append(helper.doi2json(doi.evidence))
     acts = helper.custom_sql("""
     SELECT DISTINCT act.standard_value, act.standard_units, act.standard_type, act.activity_id, act.molregno, single_domains.accession
     FROM pfam_maps pm
@@ -61,7 +65,8 @@ def evidence(request, pfam_name):
         'top_mols'  : top_mols,
         'top_acts'  : top_acts,
         'pfam_name' : pfam_name,
-        'n_acts'    : n_acts
+        'n_acts'    : n_acts,
+        'cits'      : cits
         })
     return render_to_response('pfam_maps/evidence.html',c, context_instance=RequestContext(request))
 
