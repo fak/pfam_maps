@@ -81,10 +81,26 @@ def perc(x,y):
     """
     Return a formatted version of x and a percentage of x over y.
     """
-    x_form  = "{:,.1f}".format(x)
+    x_form  = "{:,}".format(x)
     y_form = "{0:.2f}".format(100 * np.true_divide(x, y))
     return x_form, y_form
 
+
+def doi2json(doi):
+    """
+    Return a bibTeX string of metadata for a given DOI.
+    """
+    url = "http://www.ebi.ac.uk/europepmc/webservices/rest/search/query=%s&format=json" % doi
+    r = requests.get(url)
+    if r.status_code != 200:
+        return {'doi':doi}
+    else:
+        cit = json.loads(r.text)
+        try:
+            cit = cit['resultList']['result'][0] # only taking the first result should be fine with DOIs...
+        except IndexError:
+            return {'doi':doi}
+    return cit
 
 
 def standardize_acts(acts):
