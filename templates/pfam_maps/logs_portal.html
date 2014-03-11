@@ -67,19 +67,71 @@
                 <label>Query by user submitting the assignment</label>
                 <input class="form-control" name="submitter" type="text" placeholder=".*" hint="submitter">
             </div>
-            <button class="btn btn" type="submit"> Submit query </button>
+            <button class="btn btn-default" type="submit"> Submit query </button>
         </form>
-        {% if log_idx%}
-            <h3> Log of assigned mappings, by date: </h3>
-            <ul>
+        <h3> Download all mapped activities </h3>
+        <p> The link below provides access to the entire table of mapped activities. All mappings are ultimately integrated into the ChEMBL database - you can read about ways to query them here - but you might want to work with mappings that have only been assigned in the current round of curations. If that is the case you can download the pfam_maps table using the link provided below.</p>
+        
+        <a class="btn btn-default" href= "../download/"><span class="glyphicon glyphicon-download"></span> download </a>
+        <p> The pfam_maps table is structured as outlined below </p>
+        <!-- Trigger Button HTML -->
+        <input type="button" class="btn btn-default" data-toggle="collapse" data-target="#toggleDemo" value="expand table legend">
+        <!-- Collapsible Element HTML -->
+        <div id="toggleDemo" class="collapse out"> 
+          <table class="table table-striped"  style=width:500px>
+             <tr>
+                 <th> Col name</th>
+                 <th> explained </th>
+             </tr>
+             <tr>
+                 <td> map_id </td>
+                 <td> unique identifier for each row </td>
+             </tr>
+             <tr>
+                 <td> activity_id </td>
+                 <td> activity_id as in the ChEMBL activities table </td>
+             </tr>
+             <tr>
+                 <td> compd_id </td>
+                 <td> unique identifier of the domain as defined in the component_domains table in ChEMBL </td>
+             </tr>
+             <tr>
+                <td> domain_name </td>
+                <td> name of the Pfam-A domain </td>
+             </tr>
+             <tr>
+                 <td> category_flag </td>
+                 <td> Constellation in the protein: 0 - no conflict; 1 - ambiguous map; 2 - conflicting map </td>
+             </tr>
+             <tr>
+                 <td> status_flag </td>
+                 <td> Status of the domain: 0 - activity mapped to domain; 1 - activities not currently mapped to domain </td>
+             </tr>
+             <tr>
+                 <td> manual_flag </td>
+                 <td> 0 - activity uncurated; 1 -activity curated;</td>
+             </tr>
+             <tr>
+                 <td> comment </td>
+                 <td> Curation comment </td>
+             </tr>
+             <tr>
+                 <td> timestamp </td>
+                 <td> time of last curation </td>
+             </tr>
+             <tr>
+                 <td> submitter </td>
+                 <td> user who submitted last curation decision </td>
+             </tr>
+         </table>
+        </div>
+        <h3> Log of assigned mappings, by date: </h3>
+        <ul>
             {% for tstamps in log_idx.object_list %}
-            <li><a href="/pfam_maps/logs/?time={{ tstamps.0 }}"> {{tstamps.0}} </a> -- <strong>{{tstamps.1}}</strong></li>
+                <li><a href="/pfam_maps/logs/?time={{ tstamps.0 }}"> {{tstamps.0}} </a> -- <strong>{{tstamps.1}}</strong></li>
             {% endfor %}
-            </ul>
-            Page {{ log_idx.number }} of {{ log_idx.paginator.num_pages }}.
-        {% else %}
-                <p>No index  available.</p>
-        {% endif %}
+        </ul>
+        Page {{ log_idx.number }} of {{ log_idx.paginator.num_pages }}.
         <ul class="pagination pagination-sm">
             {% for idx in log_idx.paginator.page_range %}
                  {% if log_idx.number == idx %}
