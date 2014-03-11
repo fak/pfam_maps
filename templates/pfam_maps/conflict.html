@@ -98,7 +98,7 @@
             {% endfor %}
         </ul>
         {% if ass and arch and doms %}
-        <h3> Mapped to {{ mapped_dom}} in architecture: {{ arch }}  </h3>
+        <h3> Conflicting architecture: {{ arch }}  </h3>
                 <p><strong>Assay-id</strong>: <a href="https://www.ebi.ac.uk/chembldb/assay/inspect/{{  ass }}" target="blank"> {{ ass }} </a></p> <!--<a href= "/pfam_maps/details/conflicts/{{ ass }}/ "> {{   ass }} </a></h4>-->
         <p> <strong>Pubmed-ID</strong>: <a href="http://europepmc.org/abstract/MED/{{assay_page.pubmed}}" target="_blank"> {{ assay_page.pubmed }} </a>. </p> 
                 <p> <strong>Description</strong>: {{ assay_page.description }}  </p>
