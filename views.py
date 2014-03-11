@@ -4,6 +4,8 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, render_to_response
+from django.core.servers.basehttp import FileWrapper
+import os
 from django.db import connection
 import itertools
 import helper
@@ -255,7 +257,7 @@ def resolved(request, conflict_id):
     placeholder = "%s"
     placeholder = ','.join([placeholder] * len(doms))
     query = """
-    SELECT DISTINCT pm.domain_name, ass.chembl_id
+    SELECT DISTINCT pm.domain_name, ass.chembl_id, pm.status_flag
         FROM pfam_maps pm
         JOIN activities act
           ON act.activity_id = pm.activity_id
@@ -266,6 +268,7 @@ def resolved(request, conflict_id):
           AND domain_name IN(%s)
         """ % placeholder
     data = helper.custom_sql(query, doms)
+    mapped_doms = helper.mapped_dom(data)
     clash_arch = helper.arch_assays(data)
     try:
         assays = clash_arch[conflict_id]
@@ -278,10 +281,12 @@ def resolved(request, conflict_id):
     except (EmptyPage, InvalidPage):
         page_idx = paginator.page(paginator.num_pages)
     assay_id = page_idx.object_list[0]
+    mapped_dom = mapped_doms[assay_id]
     assay_page = helper.get_assay_meta(assay_id)
     assay_page = helper.get_pfam_arch(assay_page)
     dom_l = conflict_id.split(' vs. ')
     c = {
+         'mapped_dom'   : mapped_dom,
          'ass'          : assay_id,
          'arch'         : conflict_id,
          'assay_page'   : assay_page,
@@ -503,7 +508,7 @@ def logs(request):
     """
     tstamp  = request.GET.get('time','')
     query = """
-    SELECT DISTINCT pm.domain_name, ass.chembl_id
+    SELECT DISTINCT pm.domain_name, ass.chembl_id, pm.status_flag
         FROM pfam_maps pm
         JOIN activities act
           ON act.activity_id = pm.activity_id
@@ -514,6 +519,7 @@ def logs(request):
           AND timestamp LIKE '%s'
         """ % tstamp
     data = helper.custom_sql(query, tstamp)
+    mapped_doms = helper.mapped_dom(data)
     clash_arch = helper.arch_assays(data)
     assays = {}
     for arch in clash_arch:
@@ -526,11 +532,13 @@ def logs(request):
     except (EmptyPage, InvalidPage):
         page_idx = paginator.page(paginator.num_pages)
     assay_id = page_idx.object_list[0]
+    mapped_dom = mapped_doms[assay_id]
     assay_page = helper.get_assay_meta(assay_id)
     assay_page = helper.get_pfam_arch(assay_page)
     conflict_id = assays[assay_id]
     dom_l = conflict_id.split(' vs. ')
     c = {
+         'mapped_dom'   : mapped_dom,
          'ass'          : assay_id,
          'arch'         : conflict_id,
          'assay_page'   : assay_page,
@@ -587,3 +595,12 @@ def query_logs(request):
          'arch_idx'     : page_idx,
         }
     return render_to_response('pfam_maps/query_logs.html',c, context_instance=RequestContext(request))
+
+
+def download_logs(request):
+    helper.sql_command("""COPY pfam_maps TO '/tmp/pfam_maps.csv' DELIMITER '\t' CSV HEADER""", [])
+    wrapper = FileWrapper(open('/tmp/pfam_maps.csv', 'r'))
+    response = HttpResponse(wrapper, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename=pfam_maps.csv'
+    response['Content-Length'] = os.path.getsize('/tmp/pfam_maps.csv')
+    return response
