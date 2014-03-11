@@ -98,7 +98,7 @@
                {% endfor %}
         </ul>
 
-            <h3> Conflicting architecture: {{ arch }}  </h3>
+            <h3> Mapped to {{mapped_dom}} in conflicting architecture: {{ arch }}  </h3>
             <p><strong>Assay-id</strong>: <a href="https://www.ebi.ac.uk/chembldb/assay/inspect/{{  ass }}"              target="blank"> {{ ass }} </a></p> <!--<a href= "/pfam_maps/details/conflicts/{{ ass }}/ "> {{   ass }} </a></h4>-->
         <p> <strong>Pubmed-ID</strong>: <a href="http://europepmc.org/abstract/MED/{{assay_page.pubmed}}" target="_blank">{{ assay_page.pubmed }} </a> </p>
                 <p> <strong>Description</strong>: {{ assay_page.description }}  </p>
@@ -123,7 +123,7 @@
                 <div class="form-horizontal">
                     <form action="{% url 'revoke_assay' ass arch %}" method="post">{% csrf_token %}
                         <input class="form" name="comment" type="text" placeholder="Your comment here.">
-                        <button class="btn btn" type="submit" value="rand">Revoke</button>
+                        <button class="btn btn-default" type="submit" value="rand">Revoke</button>
                     </form>
                 </div>
             Page {{ page_idx.number }} of {{ page_idx.paginator.num_pages }}.
