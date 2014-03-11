@@ -12,7 +12,10 @@ def custom_sql(query, params):
     data = cursor.fetchall()
     return data
 
-
+def sql_command(query, params):
+    cursor = connection.cursor()
+    cursor.execute(query, params)
+    return
 
 def get_assay_meta(assay_1):
     #assay_1 = assay_page.keys()[0]
@@ -197,6 +200,15 @@ def arch_assays(data):
     inv_lkp = dictinvert(lkp)
     return inv_lkp
 
+def mapped_dom(data):
+    mapped_dom = {}
+    for row in data:
+        assay_id = row[1]
+        status = row[2]
+        if status == 0:
+            dom = row[0]
+            mapped_dom[assay_id]=dom
+    return mapped_dom
 
 def dictinvert(d):
         inv = {}
