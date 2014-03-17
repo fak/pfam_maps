@@ -30,4 +30,11 @@ class ValidDomains(models.Model):
     class Meta:
         db_table = 'valid_domains'
 
-
+class heldDomains(models.Model):
+    entry_id = models.IntegerField(primary_key=True)
+    domain_name = models.CharField(max_length=300, blank=True)
+    comment = models.CharField(max_length=1450, blank=True)
+    timestamp = models.CharField(max_length=75, blank=True)
+    submitter = models.CharField(max_length=150, blank=True)
+    class Meta:
+        db_table = 'held_domains'
