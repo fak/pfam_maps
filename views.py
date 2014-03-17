@@ -63,12 +63,17 @@ def evidence(request, pfam_name):
     (std_acts, lkp) = helper.standardize_acts(acts)
     (top_mols, top_acts) = helper.filter_acts(std_acts, lkp)
     n_acts = len(std_acts)
+    held_doms = helper.custom_sql("""
+    SELECT DISTINCT domain_name, comment, timestamp, submitter
+    FROM held_domains
+    """, [])
     c = Context({
         'top_mols'  : top_mols,
         'top_acts'  : top_acts,
         'pfam_name' : pfam_name,
         'n_acts'    : n_acts,
         'cits'      : cits
+        'held_doms' : held_doms
         })
     return render_to_response('pfam_maps/evidence.html',c, context_instance=RequestContext(request))
 
@@ -303,7 +308,7 @@ def user_portal(request):
     return render_to_response('pfam_maps/user_portal.html', context_instance=RequestContext(request))
 
 
-def about(request):
+def alt_about(request):
     """
     Return the About template.
     """
@@ -358,7 +363,7 @@ def about(request):
     return render_to_response('pfam_maps/about.html', c, context_instance=RequestContext(request))
 
 
-def altenative_about(request):
+def about(request):
     """
     Return an alternative About template that summarises ACTIVE activities.
     This takes a lot longer to query and is therefore inactive by default. If
@@ -372,7 +377,7 @@ def altenative_about(request):
     JOIN target_dictionary td
       ON ass.tid = td.tid
     WHERE act.pchembl_value IS NOT NULL
-    AND ass.assay_type IN('B')
+    AND ass.assay_type IN('B','F')
     AND td.target_type IN('PROTEIN COMPLEX', 'SINGLE PROTEIN')
     AND ass.relationship_type = 'D'
     AND act.pchembl_value > 5
@@ -384,7 +389,7 @@ def altenative_about(request):
     ON pm.activity_id = act.activity_id
     JOIN assays ass
       ON ass.assay_id = act.assay_id
-    WHERE ass.assay_type IN('B')
+    WHERE ass.assay_type IN('B', 'F')
     AND act.pchembl_value > 5
     """, [])[0][0]
     n_straight = helper.custom_sql("""
@@ -394,7 +399,7 @@ def altenative_about(request):
     ON pm.activity_id = act.activity_id
     JOIN assays ass
       ON ass.assay_id = act.assay_id
-    WHERE ass.assay_type IN('B')
+    WHERE ass.assay_type IN('B', 'F')
     AND category_flag = 0
     AND act.pchembl_value > 5
     """, [])[0][0]
@@ -405,7 +410,7 @@ def altenative_about(request):
     ON pm.activity_id = act.activity_id
     JOIN assays ass
       ON ass.assay_id = act.assay_id
-    WHERE ass.assay_type IN('B')
+    WHERE ass.assay_type IN('B', 'F')
     AND category_flag = 1
     AND act.pchembl_value > 5
     """, [])[0][0]
@@ -416,7 +421,7 @@ def altenative_about(request):
     ON pm.activity_id = act.activity_id
     JOIN assays ass
       ON ass.assay_id = act.assay_id
-    WHERE ass.assay_type IN('B')
+    WHERE ass.assay_type IN('B','F')
     AND category_flag = 2
     AND act.pchembl_value > 5
             """, [])[0][0]
@@ -427,7 +432,7 @@ def altenative_about(request):
     ON pm.activity_id = act.activity_id
     JOIN assays ass
       ON ass.assay_id = act.assay_id
-    WHERE ass.assay_type IN('B')
+    WHERE ass.assay_type IN('B','F')
     AND manual_flag = 1
     AND act.pchembl_value > 5
     """, [])[0][0]
@@ -603,4 +608,13 @@ def download_logs(request):
     response = HttpResponse(wrapper, content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename=pfam_maps.csv'
     response['Content-Length'] = os.path.getsize('/tmp/pfam_maps.csv')
+    return response
+
+
+def download_pfam(request):
+    helper.sql_command("""COPY valid_domains TO '/tmp/valid_domains.csv' DELIMITER '\t' CSV HEADER""", [])
+    wrapper = FileWrapper(open('/tmp/valid_domains.csv', 'r'))
+    response = HttpResponse(wrapper, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename=valid_domains.csv'
+    response['Content-Length'] = os.path.getsize('/tmp/valid_domains.csv')
     return response
