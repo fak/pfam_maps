@@ -63,23 +63,83 @@
         <p class="lead">Privileged Pfam-A domains mediate small molecule binding</p> 
         <h3> Evidence for small molecule binding to Pfam-A domains </h3>
         <p>We query the ChEMBL database for measured interactions of small molecules with single domain proteins containing a given domain. The requirements for a measurement to be counted as evidence are then the following:</p>
-        <ul>
+        <ul class="well">
+            <li> The reported activity comes from a binding assay; assay_type = 'B' </li>
+            <li> The relationship in the database must be '=' </li>
+            <li> The relationship type in the assay to target mapping must be relationship_type = 'D'</li>
+            <li> The target must be of the type 'PROTEIN COMPLEX' or 'SINGLE PROTEIN' </li>
+            <li> The activity must have an associated pChEMBL value </li>
+            <li> The potency threshold was set at 10 &mu;M. unless multiple measurements above this threshold suggests the interactions are real.</li>
+        </ul>
+            <p> The intial implementation built on a slightly different set of requirements, listed below. The most profound difference is that it set the threshold at 50 &mu;M. Upon revisiting activities in the range between 10 and 50 &mu;M, we found that they mostly represented unusual assay formats or ligands that do not fit in well with classical definitions of small molecules.</li> 
+        <ul class = "well">
             <li> Activity type must be one of 'Ki','Kd','IC50','EC50', 'AC50' or logarithmic conversion. </li>
             <li> The relationship in the database must be '=' </li>
             <li> The assay type must be assay_type = 'B' </li>
             <li> The relationship type in the assay to target mapping must be relationship_type = 'D'</li>
-            <li> The potency threshold was set at 1 &mu;M.</li>
+            <li> The potency threshold was set at 50 &mu;M.</li>
         </ul>
+        
+        
         <p>Evidence for small molecule binding to {{ names|length }} Pfam-A domains is listed below.</p>
-            {% if names %}
-                <ul>
-                {% for name in names %}
-                    <li><a href="/pfam_maps/evidence/{{ name }}/">{{ name }}</a></li>
-                {% endfor %}
-                </ul>
-            {% else %}
-                <p>No index  available.</p>
-            {% endif %}
+        <ul>
+            {% for name in names %}
+                <li><a href="/pfam_maps/evidence/{{ name }}/">{{ name }}</a></li>
+            {% endfor %}
+        </ul>
+        
+        <p>The catalogue of Pfam-A domains which are known to mediate small molecule binding can be downloaded in whole as valid_domains.</p>
+        <a class="btn btn-default" href= "download/"><span class="glyphicon glyphicon-download"></span> download </a>
+       
+        <!-- Trigger Button HTML -->
+        <a href="#tableLegend" class="dropdown-toggle" data-toggle="collapse" data-target="#tableLegend">expand table legend<b class="caret"></b></a>  
+        <!-- Collapsible Element HTML -->
+        <div id="tableLegend" class="collapse out"> 
+          <table class="table table-striped"  style=width:500px>
+             <tr>
+                 <th> Col name</th>
+                 <th> explained </th>
+             </tr>
+             <tr>
+                 <td> entry_id </td>
+                 <td> unique identifier for each row </td>
+             </tr>
+             <tr>
+                <td> domain_name </td>
+                <td> name of the Pfam-A domain </td>
+             </tr>
+             <tr>
+                 <td> comment </td>
+                 <td> Curation comment </td>
+             </tr>
+             <tr>
+                 <td> timestamp </td>
+                 <td> time of last curation </td>
+             </tr>
+             <tr>
+                 <td> submitter </td>
+                 <td> user who submitted last curation decision </td>
+             </tr>
+         </table>
+        </div>
+
+ 
+        <p>
+        <h3> Domains under review </h3>
+        <p> The catalogue of valid Pfam-A domains is subject to revision. For example, if new data in the literature suggests that a given domain mediates small molecule binding, it can be added to the PPDMs list of domains under review. In the next cycle of curations, it can be included in the main catalogue and will be projected onto proteins that are associated with eligible binding assays. Similarly, a domain that is currently listed in the catalogue can be shortlisted for removal if
+        evidence for small molecule binding turns out to be insubstantial.</p>
+
+        <p>All domains that are currently under review are listed below {{ held_doms|length }}.</p>
+        <table>
+            {% for dom in held_doms %}
+                <tr>
+                    <td> dom.1 </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+
+
       </div>
     </div><!-- /.container -->
 
