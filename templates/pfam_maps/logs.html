@@ -90,9 +90,9 @@
         <ul class="pagination pagination-sm">
                {% for idx in page_idx.paginator.page_range %}
                     {% if page_idx.number == idx %}
-                        <li class=active><a href="?time={{tstamp}}&page= {{ idx }}"> {{ idx }} </a></li>
+                        <li class=active><a href="?assay_id={{assay_id}}&page= {{ idx }}"> {{ idx }} </a></li>
                     {% else %}
-                        <li><a href="?time={{tstamp}}&page= {{ idx }}"> {{ idx }} </a></li>
+                        <li><a href="?assay_id={{assay_id}}&page= {{ idx }}"> {{ idx }} </a></li>
                     {% endif %}
                {% endfor %}
         </ul>

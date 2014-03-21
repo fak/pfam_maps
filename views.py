@@ -48,6 +48,8 @@ def evidence(request, pfam_name):
             ON act.activity_id = pm.activity_id
         JOIN assays ass
             ON act.assay_id = ass.assay_id
+        JOIN target_dictionary td
+            ON ass.tid = td.tid
         JOIN (SELECT  tid, cs.accession
                 FROM component_domains cd
                     JOIN component_sequences cs
@@ -58,7 +60,12 @@ def evidence(request, pfam_name):
                     HAVING COUNT(compd_id) =1)
         AS single_domains
         ON single_domains.tid = ass.tid
-        WHERE domain_name = %s AND standard_relation= '=' AND assay_type = 'B' AND relationship_type = 'D' LIMIT 1500
+        WHERE domain_name = %s
+        AND standard_relation= '='
+        AND assay_type = 'B'
+        AND relationship_type = 'D'
+        AND td.target_type IN('SINGLE PROTEIN')
+        LIMIT 1500
         """ , [pfam_name])
     (std_acts, lkp) = helper.standardize_acts(acts)
     (top_mols, top_acts) = helper.filter_acts(std_acts, lkp)
@@ -72,7 +79,7 @@ def evidence(request, pfam_name):
         'top_acts'  : top_acts,
         'pfam_name' : pfam_name,
         'n_acts'    : n_acts,
-        'cits'      : cits
+        'cits'      : cits,
         'held_doms' : held_doms
         })
     return render_to_response('pfam_maps/evidence.html',c, context_instance=RequestContext(request))
@@ -308,7 +315,7 @@ def user_portal(request):
     return render_to_response('pfam_maps/user_portal.html', context_instance=RequestContext(request))
 
 
-def alt_about(request):
+def about(request):
     """
     Return the About template.
     """
@@ -363,7 +370,7 @@ def alt_about(request):
     return render_to_response('pfam_maps/about.html', c, context_instance=RequestContext(request))
 
 
-def about(request):
+def alt_about(request):
     """
     Return an alternative About template that summarises ACTIVE activities.
     This takes a lot longer to query and is therefore inactive by default. If
@@ -485,13 +492,24 @@ def logs_portal(request):
     Show a log of manual asignments ordered by timestamp. Include a search field to identify assignments
     based on user name or comment string.
     """
-    query = """SELECT DISTINCT timestamp, submitter
-               FROM pfam_maps
+    query = """SELECT timestamp, submitter, assay_id
+               FROM pfam_maps pm
+               JOIN activities act 
+                ON pm.activity_id = act.activity_id
                WHERE manual_flag = 1"""
-    logs = helper.custom_sql(query, [])
-    logs_t = [(time.strptime(tt[0],'%d %B %Y %H:%M:%S'), tt[1]) for tt in logs]
-    logs_t = sorted(logs_t, key=lambda x: x[0], reverse=True)
-    logs = [(time.strftime('%d %B %Y %H:%M:%S', tt[0]), tt[1]) for tt in logs_t]
+    logs_raw = helper.custom_sql(query, [])
+    logs = []
+    lkp = {}
+    for log in logs_raw:
+        assay_id = log[2]
+        try:
+            lkp[assay_id]
+        except KeyError:
+            lkp[assay_id] = True
+            logs.append(log)
+    #logs_t = [(time.strptime(tt[0],'%d %B %Y %H:%M:%S'), tt[1]) for tt in logs]
+    logs = sorted(logs, key=lambda x: x[0], reverse=True)
+    #logs = [(time.strftime('%d %B %Y %H:%M:%S', tt[0]), tt[1]) for tt in logs_t]
     paginator = Paginator(logs, 50)
     try:
         page = int(request.GET.get('page', '1'))
@@ -511,7 +529,7 @@ def logs(request):
     Return page for individual assay. Show assay_id, description, pubmed_id,
     assay target, edit time and domain structure.
     """
-    tstamp  = request.GET.get('time','')
+    assay_id  = request.GET.get('assay_id','')
     query = """
     SELECT DISTINCT pm.domain_name, ass.chembl_id, pm.status_flag
         FROM pfam_maps pm
@@ -521,9 +539,9 @@ def logs(request):
           ON act.assay_id = ass.assay_id
           WHERE manual_flag = 1
           AND category_flag = 2
-          AND timestamp LIKE '%s'
-        """ % tstamp
-    data = helper.custom_sql(query, tstamp)
+          AND act.assay_id = %s
+        """ % assay_id
+    data = helper.custom_sql(query, [])
     mapped_doms = helper.mapped_dom(data)
     clash_arch = helper.arch_assays(data)
     assays = {}
@@ -549,7 +567,6 @@ def logs(request):
          'assay_page'   : assay_page,
          'doms'         : dom_l,
          'page_idx'     : page_idx,
-         'tstamp'       : tstamp,
         }
     return render_to_response('pfam_maps/logs.html',c, context_instance=RequestContext(request))
 

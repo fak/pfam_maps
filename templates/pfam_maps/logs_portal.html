@@ -73,9 +73,8 @@
         <p> The link below provides access to the entire table of mapped activities. All mappings are ultimately integrated into the ChEMBL database - you can read about ways to query them here - but you might want to work with mappings that have only been assigned in the current round of curations. If that is the case you can download the pfam_maps table using the link provided below.</p>
         
         <a class="btn btn-default" href= "../download/"><span class="glyphicon glyphicon-download"></span> download </a>
-        <p> The pfam_maps table is structured as outlined below </p>
         <!-- Trigger Button HTML -->
-        <input type="button" class="btn btn-default" data-toggle="collapse" data-target="#toggleDemo" value="expand table legend">
+        <a href="#" class="dropdown-toggle" data-toggle="collapse" data-target="#toggleDemo">expand table legend<b class="caret"></b></a>
         <!-- Collapsible Element HTML -->
         <div id="toggleDemo" class="collapse out"> 
           <table class="table table-striped"  style=width:500px>
@@ -128,7 +127,7 @@
         <h3> Log of assigned mappings, by date: </h3>
         <ul>
             {% for tstamps in log_idx.object_list %}
-                <li><a href="/pfam_maps/logs/?time={{ tstamps.0 }}"> {{tstamps.0}} </a> -- <strong>{{tstamps.1}}</strong></li>
+                <li><a href="/pfam_maps/logs/?assay_id={{ tstamps.2 }}"> {{tstamps.0}} </a> -- <strong>{{tstamps.1}}</strong></li>
             {% endfor %}
         </ul>
         Page {{ log_idx.number }} of {{ log_idx.paginator.num_pages }}.
