@@ -23,7 +23,6 @@ class PfamMaps(models.Model):
 class ValidDomains(models.Model):
     entry_id = models.IntegerField(primary_key=True)
     domain_name = models.CharField(max_length=300, blank=True)
-    removed_flag = models.IntegerField(null=True, blank=True)
     evidence = models.CharField(max_length=450, blank=True)
     timestamp = models.CharField(max_length=75, blank=True)
     submitter = models.CharField(max_length=150, blank=True)
@@ -36,5 +35,6 @@ class heldDomains(models.Model):
     comment = models.CharField(max_length=1450, blank=True)
     timestamp = models.CharField(max_length=75, blank=True)
     submitter = models.CharField(max_length=150, blank=True)
+    proposal = models.CharField(max_length=150, blank=True)
     class Meta:
         db_table = 'held_domains'
