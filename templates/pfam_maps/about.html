@@ -15,7 +15,8 @@
 
     <!-- Custom styles for this template -->
     <link href="/static/pfam_maps/css/starter-template.css" rel="stylesheet">
-
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=sql"></script>
+    <script src="https://code.google.com/p/google-code-prettify/source/browse/trunk/src/lang-sql.js"></script>
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
@@ -26,7 +27,7 @@
     <![endif]-->
   </head>
 
-  <body>
+  <body onload="prettyPrint()" bgcolor="white">
 
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
@@ -147,6 +148,24 @@
         The manual_flag is on 0 by default and set to 1, when a manual assignment hass been made in the Conflicts section of ppdms, and back to 0 if the assignment has been revoked in the Resolved section.
         In an independent release cycle, all mappings with a manual flag are exported and used to override the automatic mapping procedure. Thus they are perpetuated in subsequent releases of ppdms and ChEMBL.
         </p>
+        <h4>How can I access ppdms mappings from the main schema?</h4>
+        <pre class="prettyprint lang-sql">
+        SELECT pdb.predbind_id, a.assay_id, a.description, dom.domain_name
+        FROM component_sequences cs
+        JOIN target_components tc
+          ON cs.component_id = tc.component_id
+        JOIN assays ass
+          ON tc.tid = a.tid
+        JOIN activities act
+          ON a.assay_id = act.assay_id
+        JOIN predicted_binding_domains pdb
+          ON pdb.activity_id = act.activity_id
+        JOIN site_components sc
+          ON pdb.site_id = sc.site_id
+        JOIN domains dom
+          ON dom.domain_id = sc.domain_id
+        WHERE cs.accession = 'Q07422';
+        </pre>
         <h4>ICanHazCode</h4>
         Yes, there is a repo on <a href="https://github.com/fak/pfam_maps"> github </a>.
 
