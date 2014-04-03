@@ -130,11 +130,20 @@
         evidence for small molecule binding turns out to be insubstantial.</p>
 
         <p>All domains that are currently under review are listed below {{ held_doms|length }}.</p>
-        <table>
+        <table class="table table-striped"  style=width:500px>
+            <tr>
+                <th> domain_name </th>
+                <th> comment    </th>    
+                <th> submitter  </th>
+                <th> time       </th>
+            </tr>
             {% for dom in held_doms %}
                 <tr>
-                    <td> dom.1 </td>
-                </tr>
+                    <td> {{dom.0}} </td>
+                    <td> {{dom.1}} </td>
+                    <td> {{dom.3}} </td>
+                    <td> {{dom.2}} </td>
+                </tr>                                  
             {% endfor %}
         </table>
 

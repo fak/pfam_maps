@@ -26,9 +26,14 @@ def evidence_portal(request):
     """
     data = helper.custom_sql('SELECT DISTINCT domain_name FROM pfam_maps', [])
     names = sorted([x[0] for x in data])
+    held_doms = helper.custom_sql("""
+    SELECT DISTINCT domain_name, comment, timestamp, submitter
+    FROM held_domains
+    """, [])
     c = Context({
         'names': names,
-    })
+        'held_doms' : held_doms
+        })
     return render_to_response('pfam_maps/evidence_portal.html',c, context_instance=RequestContext(request))
 
 
@@ -70,17 +75,12 @@ def evidence(request, pfam_name):
     (std_acts, lkp) = helper.standardize_acts(acts)
     (top_mols, top_acts) = helper.filter_acts(std_acts, lkp)
     n_acts = len(std_acts)
-    held_doms = helper.custom_sql("""
-    SELECT DISTINCT domain_name, comment, timestamp, submitter
-    FROM held_domains
-    """, [])
     c = Context({
         'top_mols'  : top_mols,
         'top_acts'  : top_acts,
         'pfam_name' : pfam_name,
         'n_acts'    : n_acts,
         'cits'      : cits,
-        'held_doms' : held_doms
         })
     return render_to_response('pfam_maps/evidence.html',c, context_instance=RequestContext(request))
 
