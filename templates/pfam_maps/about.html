@@ -149,23 +149,44 @@
         In an independent release cycle, all mappings with a manual flag are exported and used to override the automatic mapping procedure. Thus they are perpetuated in subsequent releases of ppdms and ChEMBL.
         </p>
         <h4>How can I access ppdms mappings from the main schema?</h4>
+        <p>Mappings that have already been processed as described above can be accessed directly through the main schema of the ChEMBL database. A few examples are provided below. </p>
+        <p>Below an exemplary query to pull back all mappings for the Bifunctional dihydrofolate reductase-thymidylate synthase of Toxoplasma Gondii. </p> 
         <pre class="prettyprint lang-sql">
-        SELECT pdb.predbind_id, a.assay_id, a.description, dom.domain_name
-        FROM component_sequences cs
-        JOIN target_components tc
+        SELECT pdb.predbind_id, a.assay_id, dom.domain_name, cs.description, a.description
+        FROM component_sequences cs -- obtaining target sequences from component_sequences.
+        JOIN target_components tc -- linking through to activities table via target_components and assays.
           ON cs.component_id = tc.component_id
-        JOIN assays ass
+        JOIN assays a
           ON tc.tid = a.tid
-        JOIN activities act
+        JOIN activities act -- activities table is the connecting element in this query.
           ON a.assay_id = act.assay_id
-        JOIN predicted_binding_domains pdb
+        JOIN predicted_binding_domains pdb -- linking to domains table through predicted_binding_domains and site_components.
           ON pdb.activity_id = act.activity_id
         JOIN site_components sc
           ON pdb.site_id = sc.site_id
-        JOIN domains dom
+        JOIN domains dom -- obtaining domain names from domains. 
           ON dom.domain_id = sc.domain_id
         WHERE cs.accession = 'Q07422';
         </pre>
+
+        A query to obtain all mappings for the same protein but limited to approved drugs could look like this:
+
+        <pre class="prettyprint lang-sql">
+        SELECT DISTINCT md.pref_name,  dom.domain_name, indication_class
+        FROM activities act -- activities table is the connecting element in this query.
+        JOIN predicted_binding_domains pdb -- linking to domains table through predicted_binding_domains and site_components.
+          ON pdb.activity_id = act.activity_id
+        JOIN site_components sc
+          ON pdb.site_id = sc.site_id
+        JOIN domains dom -- obtaining domain names from domains. 
+          ON dom.domain_id = sc.domain_id
+        JOIN molecule_dictionary md
+          ON md.molregno = act.molregno
+        WHERE md.max_phase >= 4 AND dosed_ingredient=1 AND therapeutic_flag=1
+        ORDER BY md.pref_name;
+        </pre>
+
+
         <h4>ICanHazCode</h4>
         Yes, there is a repo on <a href="https://github.com/fak/pfam_maps"> github </a>.
 
@@ -178,5 +199,19 @@
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="/static/pfam_maps/dist/js/bootstrap.min.js"></script>
   </body>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-38155228-2', '10.7.248.26');
+  ga('send', 'pageview');
+
+</script>
+
+
+
 </html>
 
