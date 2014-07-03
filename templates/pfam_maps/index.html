@@ -11,10 +11,10 @@
     <title>PoPaDoMs Server</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/static/pfam_maps/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}pfam_maps/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/static/pfam_maps/css/starter-template.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}pfam_maps/css/starter-template.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -37,16 +37,16 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/pfam_maps">ppdms</a>
+          <a class="navbar-brand" href={%url "index" %}>ppdms</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/pfam_maps/conflicts">Conflicts</a></li>
-            <li><a href="/pfam_maps/resolved">Resolved</a></li>
-            <li><a href="/pfam_maps/evidence">Evidence</a></li>
-            <li><a href="/pfam_maps/accounts/profile/">User Profile</a></li>
-            <li><a href="/pfam_maps/logs/portal/">Logs</a></li>
-            <li><a href="/pfam_maps/about/">About</a></li>
+            <li><a href={% url "conflict_portal" %}>Conflicts</a></li>
+            <li><a href={% url "resolved_portal" %}>Resolved</a></li>
+            <li><a href={% url "evidence_portal" %}>Evidence</a></li>
+            <li><a href={% url "user_portal" %}>User Profile</a></li>
+            <li><a href={% url "logs_portal" %}>Logs</a></li>
+            <li><a href={% url "about" %}>About</a></li>
           </ul>
           {% if user.is_authenticated %}
             <p class="navbar-text pull-right"> signed in as {{ user.username }}.</p>
@@ -66,13 +66,13 @@
             <p>Welcome to ppdms - a platform that facilitates manual refinements of a mapping of small molecule binding to Pfam-A domains. The mapping aims to link measurements of small molecule bioactivity stored in the <a target="_blank" href="https://www.ebi.ac.uk/chembldb/"> ChEMBL database </a> to regions within a given protein that are described by <a target="_blank" href="http://pfam.sanger.ac.uk/help#tabview=tab3"> Pfam-A </a> domains. By associating bioactivity with a protein domain, rather than the whole length protein, the mapping enables meaningful alignments of drug targets and ligand-fishing approaches. </p>
         </div>
         <h4>Why should I use ppdms</h4>
-        <p> The ppdms facility is designed for users of the ChEMBL database who rely on sequence information to relate proteins to bioactive small molecules. ChEMBL provides a mapping of small molecule binding (see also <a href="/pfam_maps/about/"> here</a>) to Pfam-A domains and many users will be happy to rely on the provided mappings alone. However, ppdms offers the opportunity to review the mappings made available through the ChEMBL database. In addition, ppdms offers the opportunity to review cases that are not initially covered by the mapping available through ChEMBL: that of conflicting mappings, where multiple domains within the same protein can interact with small molecules. In ppdms, the user can decide to contribute as a curator to resolve such conflicting mappings. Resolved mappings from ppdms are regularly fed into the mapping available through ChEMBL. 
+        <p> The ppdms facility is designed for users of the ChEMBL database who rely on sequence information to relate proteins to bioactive small molecules. ChEMBL provides a mapping of small molecule binding (see also <a href={% url "about" %}> here</a>) to Pfam-A domains and many users will be happy to rely on the provided mappings alone. However, ppdms offers the opportunity to review the mappings made available through the ChEMBL database. In addition, ppdms offers the opportunity to review cases that are not initially covered by the mapping available through ChEMBL: that of conflicting mappings, where multiple domains within the same protein can interact with small molecules. In ppdms, the user can decide to contribute as a curator to resolve such conflicting mappings. Resolved mappings from ppdms are regularly fed into the mapping available through ChEMBL. 
         <h4>How to use ppdms</h4>
         <p>
-        You can review evidence of small molecule binding to Pfam-A domains in the <a href="/pfam_maps/evidence"><strong>Evidence</strong></a> section.
+        You can review evidence of small molecule binding to Pfam-A domains in the <a href={% url "evidence_portal" %}><strong>Evidence</strong></a> section.
             For each domain in the catalogue, small molecule bioactivities are retrieved from the database and presented in a graphic.
             You can also review the manual assignemnts that were made by the curators in the <a href="/pfam_maps/resolved"><strong> Resolved</strong></a> section.
-            If you are a registered curator, you can log-in in the <a href="pfam_maps/accounts/profile/"><strong>User Profile</strong></a> section and assign mappings in the <a href="/pfam_maps/conflicts"><strong>Conflicts</strong></a> section.
+            If you are a registered curator, you can log-in in the <a href={% url "user_portal" %}><strong>User Profile</strong></a> section and assign mappings in the <a href=i{% url "conflict_portal" %}><strong>Conflicts</strong></a> section.
         Make sure to add a comment that helps others understand your assignemnt decision. </p> 
 
 
@@ -83,7 +83,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery.js"></script>
-    <script src="/static/pfam_maps/dist/js/bootstrap.min.js"></script>
+    <script src="{{STATIC_URL}}pfam_maps/dist/js/bootstrap.min.js"></script>
   </body>
 </html>
 
