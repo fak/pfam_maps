@@ -65,7 +65,7 @@
         <p> A number of architectures caused conflicting mappings. Of these,  {{ clash_count }} mappings were resolved manually. Associated activities are summarised here, broken down by architecture type:</p>
         <ul>
             {% for name, count in clash_arch.items %}
-            <li><a href="resolved/{{ name }}/">{{ name }}</a> ({{ count|length }} activities) </li>
+            <li><a href="{{ name }}/">{{ name }}</a> ({{ count|length }} activities) </li>
             {% endfor %}
       </div>
     </div><!-- /.container -->
