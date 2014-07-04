@@ -66,7 +66,7 @@
         <p> There are {{ clash_count }} activities where the mapping defaulted to more than one domain type. Of these, {{ man_count }} have been manually resolved.</p>
          <ul>
              {% for name, count in clash_arch.items %}
-             <li><a href="conflicts/{{ name }}/">{{ name }}</a> ({{ count|length }} activities) </li>
+             <li><a href="{{ name }}/">{{ name }}</a> ({{ count|length }} activities) </li>
              {% endfor %}
          </ul>
          <p> There are also {{ dub_count }} activities where the mapping defaulted to multiple instances of the same domain type. </p>

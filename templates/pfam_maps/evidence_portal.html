@@ -84,7 +84,7 @@
         <p>Evidence for small molecule binding to {{ names|length }} Pfam-A domains is listed below.</p>
         <ul>
             {% for name in names %}
-                <li><a href="/pfam_maps/evidence/{{ name }}/">{{ name }}</a></li>
+                <li><a href="{{ name }}/">{{ name }}</a></li>
             {% endfor %}
         </ul>
         
