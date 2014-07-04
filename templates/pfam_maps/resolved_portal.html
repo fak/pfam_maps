@@ -11,10 +11,10 @@
     <title>PoPaDoMs Server</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/static/pfam_maps/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}pfam_maps/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/static/pfam_maps/css/starter-template.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}pfam_maps/css/starter-template.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -37,16 +37,16 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/pfam_maps">ppdms</a>
+          <a class="navbar-brand" href={% url "index" %}>ppdms</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/pfam_maps/conflicts">Conflicts</a></li>
-            <li><a href="/pfam_maps/resolved">Resolved</a></li>
-            <li><a href="/pfam_maps/evidence">Evidence</a></li>
-            <li><a href="/pfam_maps/accounts/profile/">User Profile</a></li>
-            <li><a href="/pfam_maps/logs/portal/">Logs</a></li>
-            <li><a href="/pfam_maps/about/">About</a></li>
+            <li><a href={% url "conflict_portal" %}>Conflicts</a></li>
+            <li><a href={% url "resolved_portal" %}>Resolved</a></li>
+            <li><a href={% url "evidence_portal" %}>Evidence</a></li>
+            <li><a href={% url "user_portal" %}>User Profile</a></li>
+            <li><a href={% url "logs_portal" %}>Logs</a></li>
+            <li><a href={% url "about" %}>About</a></li>
           </ul>
           {% if user.is_authenticated %}
             <p class="navbar-text pull-right"> signed in as {{ user.username }}.</p>
