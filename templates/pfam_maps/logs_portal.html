@@ -127,7 +127,7 @@
         <h3> Log of assigned mappings, by date: </h3>
         <ul>
             {% for tstamps in log_idx.object_list %}
-                <li><a href="/pfam_maps/logs/?assay_id={{ tstamps.2 }}"> {{tstamps.0}} </a> -- <strong>{{tstamps.1}}</strong></li>
+                <li><a href="../?assay_id={{ tstamps.2 }}"> {{tstamps.0}} </a> -- <strong>{{tstamps.1}}</strong></li>
             {% endfor %}
         </ul>
         Page {{ log_idx.number }} of {{ log_idx.paginator.num_pages }}.
