@@ -620,18 +620,19 @@ def query_logs(request):
 
 
 def download_logs(request):
-    helper.sql_command("""COPY pfam_maps TO '/tmp/pfam_maps.csv' DELIMITER '\t' CSV HEADER""", [])
-    wrapper = FileWrapper(open('/tmp/pfam_maps.csv', 'r'))
-    response = HttpResponse(wrapper, content_type='text/plain')
+    qres = helper.custom_sql("""SELECT * FROM pfam_maps""", [])
+    response = HttpResponse(qres, content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename=pfam_maps.csv'
-    response['Content-Length'] = os.path.getsize('/tmp/pfam_maps.csv')
     return response
 
 
 def download_pfam(request):
-    helper.sql_command("""COPY valid_domains TO '/tmp/valid_domains.csv' DELIMITER '\t' CSV HEADER""", [])
-    wrapper = FileWrapper(open('/tmp/valid_domains.csv', 'r'))
-    response = HttpResponse(wrapper, content_type='text/plain')
+    qres = helper.custom_sql("""SELECT * FROM valid_domains""", [])
+    qstr = ''
+    for ent in qres:
+        ll = [str(x) for x in ent]
+        ss = ','.join(ll)
+        qstr = qstr  + ss + '\n'
+    response = HttpResponse(qstr, content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename=valid_domains.csv'
-    response['Content-Length'] = os.path.getsize('/tmp/valid_domains.csv')
     return response
