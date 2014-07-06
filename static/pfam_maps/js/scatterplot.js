@@ -33,13 +33,13 @@
             .rangeBands([20,h], .1);
 
         // Background
-        dotplot.append("rect")
-             .attr("height", h)
-             .attr("width", w)
-             .attr("fill", d3.rgb(200, 200, 200))
-             .attr("stroke", "black")
-             .attr("stroke-width", 1)
-             .attr("pointer-events", "none");
+        //dotplot.append("rect")
+       //      .attr("height", h)
+       //      .attr("width", w)
+       //      .attr("fill", d3.rgb(200, 200, 200))
+       //      .attr("stroke", "black")
+       //      .attr("stroke-width", 1)
+       //      .attr("pointer-events", "none");
 
 
         // Axis labels
@@ -109,7 +109,7 @@
                                     })
                .attr("y1", 0)
                .attr("y2", h)
-               .attr("stroke", "white")
+               .attr("stroke", "black")
                .attr("stroke-width", 1);
 
         dotplot.selectAll("empty")
@@ -125,8 +125,9 @@
                                     })
                .attr("x1", 0)
                .attr("x2", w)
-               .attr("stroke", "white")
-               .attr("stroke-width", 1);
+               .style("stroke-dasharray", ("6, 1.5"))
+               .attr("stroke", d3.rgb(200, 200, 200))
+               .attr("stroke-width", 20);
         // Add dots.  
         dotplot.selectAll("empty")
                 .data(top_acts)
