@@ -22,7 +22,7 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-  <script type="text/javascript" src="/static/pfam_maps/d3/d3.v3.min.js"></script>
+  <script type="text/javascript" src="{{STATIC_URL}}pfam_maps/d3/d3.v3.min.js"></script>
   <script type="text/javascript"> 
     var top_acts = {{ top_acts|safe }};
     var top_mols = {{top_mols|safe }};
@@ -72,7 +72,7 @@
             <p>No index  available.</p>
         {% endif %}
         <div id="anks">
-          <script type="text/javascript" src="/static/pfam_maps/js/scatterplot.js"></script>
+          <script type="text/javascript" src="{{STATIC_URL}}pfam_maps/js/scatterplot.js"></script>
         </div>
         <p> If the plot above shows no activities, you have come across a case where the evidence for small molecule does not come from ChEMBL but from the literature. Cited below are {{cits|length}} articles that demonstrate the {{pfam_name}} domain capability of binding small molecules. </p>
         <ul>
