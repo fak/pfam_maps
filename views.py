@@ -630,7 +630,8 @@ class Echo(object):
 
 
 def download_logs(request):
-    qres = helper.custom_sql("""SELECT * FROM pfam_maps""", [])
+    qres = helper.custom_sql("""SELECT * FROM pfam_maps WHERE NOT submitter = 'system'""", [])
+    #qres=PfamMaps.objects.all.iterator()
     pseudo_buffer=Echo()
     writer = csv.writer(pseudo_buffer)
     response = StreamingHttpResponse((writer.writerow(row) for row in qres),content_type='text/csv')
