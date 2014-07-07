@@ -92,7 +92,7 @@
         <a class="btn btn-default" href={% url "download_pfam" %}><span class="glyphicon glyphicon-download"></span> download </a>
        
         <!-- Trigger Button HTML -->
-        <a href="#tableLegend" class="dropdown-toggle" data-toggle="collapse" data-target="#tableLegend">expand table legend<b class="caret"></b></a>  
+        <a class="btn btn-default" data-toggle="collapse" data-target="#tableLegend">expand table legend<b class="caret"></b></a>  
         <!-- Collapsible Element HTML -->
         <div id="tableLegend" class="collapse out"> 
           <table class="table table-striped"  style=width:500px>
@@ -157,7 +157,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery.js"></script>
-    <script src="/static/pfam_maps/dist/js/bootstrap.min.js"></script>
+    <script src="{{STATIC_URL}}pfam_maps/dist/js/bootstrap.min.js"></script>
   </body>
 </html>
 

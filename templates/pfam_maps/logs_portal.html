@@ -74,9 +74,9 @@
         
         <a class="btn btn-default" href={% url "download_logs" %}><span class="glyphicon glyphicon-download"></span> download </a>
         <!-- Trigger Button HTML -->
-        <a href="#toggleDemo" class="dropdown-toggle" data-toggle="collapse" data-target="#toggleDemo">expand table legend<b class="caret"></b></a>
+        <a class="btn btn-default"  data-toggle="collapse" data-target="#toggleLegend">expand table legend<b class="caret"></b></a>
         <!-- Collapsible Element HTML -->
-        <div id="toggleDemo" class="collapse out"> 
+        <div id="toggleLegend" class="collapse out"> 
           <table class="table table-striped"  style=width:500px>
              <tr>
                  <th> Col name</th>
@@ -148,7 +148,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="//code.jquery.com/jquery.js"></script>
-    <script src="/static/pfam_maps/dist/js/bootstrap.min.js"></script>
+    <script src="{{STATIC_URL}}pfam_maps/dist/js/bootstrap.min.js"></script>
   </body>
 </html>
 
