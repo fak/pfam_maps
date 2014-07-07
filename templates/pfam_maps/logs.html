@@ -26,10 +26,10 @@
     <![endif]-->
   <!-- Pfam libraries -->
   <!-- load the prototype library from google -->
-  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+  <script type="text/javascript" src="//www.google.com/jsapi"></script>
   <script type="text/javascript">google.load("prototype", "1.7");</script>
   <!-- the domain graphics library -->
-  <script type="text/javascript" src="http://pfam.sanger.ac.uk/static/javascripts/domain_graphics.js"></script>
+  <script type="text/javascript" src="//pfam.sanger.ac.uk/static/javascripts/domain_graphics.js"></script>
 
    <!-- Load variables -->
   <script type="text/javascript">
@@ -99,8 +99,8 @@
 
         {% if ass and assay_page %}
             <h3> Mapped to {{mapped_dom}} in conflicting architecture: {{ arch }}   </h3>
-            <p><strong>Assay-id</strong>: <a href="https://www.ebi.ac.uk/chembldb/assay/inspect/{{ass}}"target="blank"> {{ ass }} </a></p> <!--<a href= "/pfam_maps/details/conflicts/{{ ass }}/ "> {{   ass }} </a></h4>-->
-        <p> <strong>Pubmed-ID</strong>: <a href="http://europepmc.org/abstract/MED/{{assay_page.pubmed}}" target="_blank">{{ assay_page.pubmed }} </a> </p>
+            <p><strong>Assay-id</strong>: <a href="//www.ebi.ac.uk/chembldb/assay/inspect/{{ass}}"target="blank"> {{ ass }} </a></p> <!--<a href= "/pfam_maps/details/conflicts/{{ ass }}/ "> {{   ass }} </a></h4>-->
+        <p> <strong>Pubmed-ID</strong>: <a href="//europepmc.org/abstract/MED/{{assay_page.pubmed}}" target="_blank">{{ assay_page.pubmed }} </a> </p>
                 <p> <strong>Description</strong>: {{ assay_page.description }}  </p>
                 <p><strong>Assay target pref_name</strong>: {{ assay_page.pref_name }} </p>
                 <p><strong>Last edit</strong>: {{assay_page.timestamp}} -- submitted by <strong>{{assay_page.submitter}}</strong>
@@ -110,7 +110,7 @@
                 {{ assay_page.pref_name}} is composed of the following chain(s):
                 <ul>
                     {% for uniprot in assay_page.components %}
-                        <li><a href="http://www.uniprot.org/uniprot/{{ uniprot }}" target="blank">{{uniprot}}</a></li>
+                        <li><a "//www.uniprot.org/uniprot/{{ uniprot }}" target="blank">{{uniprot}}</a></li>
                     {% endfor %}
                 </ul>
                 {% for pfam_arch in assay_page.pfam_archs %}
@@ -137,8 +137,8 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery.js"></script>
-    <script src="/static/pfam_maps/dist/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery.js"></script>
+    <script src="{{STATIC_URL}}pfam_maps/dist/js/bootstrap.min.js"></script>
   </body>
 </html>
 
