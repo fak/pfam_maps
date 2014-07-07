@@ -2,7 +2,7 @@ from django.template import Context, loader, RequestContext
 from pfam_maps.models import PfamMaps, ValidDomains
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.shortcuts import get_object_or_404, render, render_to_response
 from django.core.servers.basehttp import FileWrapper
 import os
@@ -11,6 +11,7 @@ import itertools
 import helper
 import time
 from django.contrib.auth import authenticate, login, logout
+import csv
 
 
 def index(request):
@@ -619,20 +620,30 @@ def query_logs(request):
     return render_to_response('pfam_maps/query_logs.html',c, context_instance=RequestContext(request))
 
 
+class Echo(object):
+    """An object that implements just the write method of the file-like
+    interface.
+    """
+    def write(self, value):
+        """Write the value by returning it, instead of storing in a buffer."""
+        return value
+
+
 def download_logs(request):
     qres = helper.custom_sql("""SELECT * FROM pfam_maps""", [])
-    response = HttpResponse(qres, content_type='text/plain')
+    pseudo_buffer=Echo()
+    writer = csv.writer(pseudo_buffer)
+    response = StreamingHttpResponse((writer.writerow(row) for row in qres),content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=pfam_maps.csv'
     return response
 
 
 def download_pfam(request):
     qres = helper.custom_sql("""SELECT * FROM valid_domains""", [])
-    qstr = ''
-    for ent in qres:
-        ll = [str(x) for x in ent]
-        ss = ','.join(ll)
-        qstr = qstr  + ss + '\n'
-    response = HttpResponse(qstr, content_type='text/plain')
-    response['Content-Disposition'] = 'attachment; filename=valid_domains.csv'
+    pseudo_buffer=Echo()
+    writer = csv.writer(pseudo_buffer)
+    response = StreamingHttpResponse((writer.writerow(row) for row in qres),content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=valid_domains.txt'
     return response
+
+
