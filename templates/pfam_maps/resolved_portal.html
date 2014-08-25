@@ -62,7 +62,7 @@
       <div class="starter-template">
         <h1>ppdms</h1>
         <p class="lead">Privileged Pfam-A domains mediate small molecule binding</p> 
-        <p> A number of architectures caused conflicting mappings. Of these,  {{ clash_count }} mappings were resolved manually. Associated activities are summarised here, broken down by architecture type:</p>
+        <p> {{clash_arch|length}} architectures caused conflicting mappings that have, at least partly, been resolved. Associated activities are summarised below, broken down by architecture type. Please note that conflicts are resolved on a per-assay basis, so all activities from one assay are grouped, and the binding site annotation from the assay is applied to all activities. This seems reasonable, as the endpoints measured in biochemical assays are specific to one domain type (eg. susbtrate turn-over in enzymatic assays). For each conflicting architecture, you will be presented with a list of assays for which binding could take place at one of two or more domains. </p>
         <ul>
             {% for name, count in clash_arch.items %}
             <li><a href="{{ name }}/">{{ name }}</a> ({{ count|length }} activities) </li>
