@@ -66,7 +66,7 @@
         <p class="lead" data-toggle="tooltip" id='test'>Privileged Pfam-A domains mediate small molecule binding</p> 
         <h3> {{ pfam_name }} </h3>
         {% if top_mols and top_acts  %}
-        <p> Shown below are measured interactions of the {{ pfam_name }} Pfam-A domain with small molecules. Each point represents a measurement. There is currently a limit of ten on the number of displayed molecules. The total number of activities for this domain type in ChEMBL is {{ n_acts }}. For some Pfam-A domains, such as 7tm_1, there will be many more compounds.</p>
+        <p> Shown below are measured interactions of the <a href="http://pfam.xfam.org/family/{{ pfam_name }}" target="blank">{{ pfam_name }}</a> Pfam-A domain with small molecules. Each point represents a measurement. There is currently a limit of ten on the number of displayed molecules. The total number of activities for this domain type in ChEMBL is {{ n_acts }}. For some Pfam-A domains, such as 7tm_1, there will be many more compounds.</p>
         
         {% else %}
             <p>No index  available.</p>

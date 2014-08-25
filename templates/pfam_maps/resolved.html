@@ -86,18 +86,8 @@
     </div>
 
     <div class="container">
-
       <div class="starter-template">
-        <ul class="pagination pagination-sm">
-               {% for idx in page_idx.paginator.page_range %}
-                    {% if page_idx.number == idx %}
-                        <li class=active><a href="?page= {{ idx }}"> {{ idx }} </a></li>
-                    {% else %}
-                        <li><a href="?page= {{ idx }}"> {{ idx }} </a></li>
-                    {% endif %}
-               {% endfor %}
-        </ul>
-
+            <p>This is page {{ page_idx.number }} of {{ page_idx.paginator.num_pages }}. More assays associated with this architecture are linked at the bottom of this page. </p>
             <h3> Mapped to {{mapped_dom}} in conflicting architecture: {{ arch }}  </h3>
             <p><strong>Assay-id</strong>: <a href="https://www.ebi.ac.uk/chembldb/assay/inspect/{{  ass }}"              target="blank"> {{ ass }} </a></p> <!--<a href= "/pfam_maps/details/conflicts/{{ ass }}/ "> {{   ass }} </a></h4>-->
         <p> <strong>Pubmed-ID</strong>: <a href="http://europepmc.org/abstract/MED/{{assay_page.pubmed}}" target="_blank">{{ assay_page.pubmed }} </a> </p>
@@ -113,6 +103,10 @@
                         <li><a href="http://www.uniprot.org/uniprot/{{ uniprot }}" target="blank">{{uniprot}}</a></li>
                     {% endfor %}
                 </ul>
+                <p> The conflict is between
+                {% for dom in doms %}
+                    <a href="http://pfam.xfam.org/family/{{ dom }}" target="blank">{{dom}}</a>,
+                {% endfor %} within the architecture shown below:</p>
                 {% for pfam_arch in assay_page.pfam_archs %}
                     <div id="dg_{{ forloop.counter }}{{ass}}"></div>
                         <script type="text/javascript">
@@ -120,13 +114,24 @@
                         </script>
                 {% endfor %}
                 </p>
+                <h3> Curator Input </h3>
                 <div class="form-horizontal">
                     <form action="{% url 'revoke_assay' ass arch %}" method="post">{% csrf_token %}
                         <input class="form" name="comment" type="text" placeholder="Your comment here.">
                         <button class="btn btn-default" type="submit" value="rand">Revoke</button>
                     </form>
                 </div>
-            Page {{ page_idx.number }} of {{ page_idx.paginator.num_pages }}.
+            <br>
+            <p> More assays associated with this architecture are linked below.</p>
+            <ul class="pagination pagination-sm">
+                {% for idx in page_idx.paginator.page_range %}
+                     {% if page_idx.number == idx %}
+                         <li class=active><a href="?page= {{ idx }}"> {{ idx }} </a></li>
+                    {% else %}
+                         <li><a href="?page= {{ idx }}"> {{ idx }} </a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
       </div>
     </div><!-- /.container -->
 
