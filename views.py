@@ -351,6 +351,9 @@ def about(request):
     SELECT COUNT(DISTINCT activity_id) FROM pfam_maps
     WHERE manual_flag = 1
     """, [])[0][0]
+    chembl_version = helper.custom_sql("""
+    SELECT name FROM version
+    """, [])[0][0]
     n_none = n_total - n_mapped
     n_confl_comb = n_confl + n_ambigs
     n_unres = n_confl - n_res
@@ -367,6 +370,7 @@ def about(request):
         'n_confl_comb': helper.perc(n_confl_comb, n_total),
         'n_res'     : helper.perc(n_res, n_confl_comb),
         'n_unres'   : helper.perc(n_unres, n_confl_comb),
+        'chembl_version' : chembl_version
         })
     return render_to_response('pfam_maps/about.html', c, context_instance=RequestContext(request))
 
