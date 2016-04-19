@@ -38,3 +38,4 @@ class heldDomains(models.Model):
     proposal = models.CharField(max_length=150, blank=True)
     class Meta:
         db_table = 'held_domains'
+

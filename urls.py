@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
-
+#from pfam_maps.forms import ExRegistrationForm
+#from registration.backends.default.views import RegistrationView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -24,9 +25,9 @@ urlpatterns = patterns('pfam_maps.views',
     url(r'^accounts/logout/$', 'logout_view', name= 'logout'),
     url(r'^accounts/profile/$', 'user_portal', name= 'user_portal'),
     url(r'^about/$', 'about', name= 'about'),
+    url(r'^accounts/register/$', 'registration_view', name = 'user_registration'),
     )
 
 urlpatterns += patterns('',
-            url(r'^admin/', include(admin.site.urls)),
             )
 

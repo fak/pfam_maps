@@ -492,6 +492,29 @@ def login_view(request):
         # Return an 'invalid login' error message.
             return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
 
+from django.contrib.auth.models import User
+def registration_view(request):
+    """
+    Log in user and return to the user_portal view.
+    """
+    username = request.POST['username']
+    password = request.POST['password']
+    email = request.POST['email']
+    c={}
+    user = User.objects.create_user(username, email, password)
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            # Redirect to success page.
+            return render_to_response('pfam_maps/user_portal.html',c,context_instance=RequestContext(request))
+        else:
+            # Return a 'disabled account' error message
+            return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
+    else:
+        # Return an 'invalid login' error message.
+        return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
+
 def logs_portal(request):
     """
     Show a log of manual asignments ordered by timestamp. Include a search field to identify assignments

@@ -77,18 +77,9 @@
                 <form action="{% url 'login' %}" method="post">{%csrf_token%}
                   <input class="form" name="username" type="text" placeholder="user">
                   <input class="form" name="password" type="password" placeholder="password">
+                  <input class="form" name="password" type="password" placeholder="password">
                   <button class="btn btn-default" type="submit"> Login </button>        
                 </form>
-              <div class="form-horizontal">
-                <form action="{% url 'user_registration' %}" method="post">{%csrf_token%}
-                  <input class="form" name="username" type="text" placeholder="user">
-                  <input class="form" name="password" type="password" placeholder="password">
-                  <input class="form" name="email" type="email" placeholder="f@m">
-                  <button class="btn btn-default" type="submit"> Register </button>        
-                </form>
-              </div>
-              <div>
-            <li><a href='{% url "password_reset_recover" %}'>Reset</a></li>
               </div>
             {% endblock %}
           {% endif %}
