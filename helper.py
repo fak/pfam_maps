@@ -70,7 +70,7 @@ def get_assay_meta(assay_1):
 
 def get_pfam_arch(assay_page):
     for uniprot in assay_page['components']:
-        r = requests.get('http://pfam.sanger.ac.uk/protein/%s/graphic'% uniprot)
+        r = requests.get('http://pfam.xfam.org/protein/%s/graphic'% uniprot)
         doms = r.content
         #doms = '[{"length":"950","regions":[{"colour":"#2dcf00", "endStyle":"jagged","end":"361","startStyle":"jagged","text":"Peptidase_S8","href":"/family/PF00082","type":"pfama","start": "159"},]}]' #this would be an example of a pfam-architecture obtained in this way.
         try:

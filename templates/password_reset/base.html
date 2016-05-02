@@ -62,36 +62,17 @@
       <div class="starter-template">
         <h1>ppdms</h1>
         <p class="lead">Privileged Pfam-A domains mediate small molecule binding</p> 
-          {% if user.is_authenticated %}
-            <div class="form-horizontal">
-              <form action="{% url 'logout' %}" method="post">{%csrf_token%}
-                <button class="btn btn-default" type="submit" value="rand">Logout </button>
-              </form>
-            </div> 
-          {% else %}
-            {% block content %}
-  	      {% if form.errors %}
-                <p class="error">Sorry, that's not a valid username or password</p>
-              {% endif %}
-              <div class="form-horizontal">
-                <form action="{% url 'login' %}" method="post">{%csrf_token%}
-                  <input class="form" name="username" type="text" placeholder="user">
-                  <input class="form" name="password" type="password" placeholder="password">
-                  <button class="btn btn-default" type="submit"> Login </button>        
-                </form>
-              <div class="form-horizontal">
-                <form action="{% url 'user_registration' %}" method="post">{%csrf_token%}
-                  <input class="form" name="username" type="text" placeholder="user">
-                  <input class="form" name="password" type="password" placeholder="password">
-                  <input class="form" name="email" type="email" placeholder="f@m">
-                  <button class="btn btn-default" type="submit"> Register </button>        
-                </form>
-              </div>
-              <div>
-            <li><a href='{% url "password_reset_recover" %}'>Reset</a></li>
-              </div>
-            {% endblock %}
+            {% block contenta %}
+          {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+                </ul>
           {% endif %}
+        {% endblock %}
+            {% block content %}
+            {% endblock %}
         </div>
     </div><!-- /.container -->
 

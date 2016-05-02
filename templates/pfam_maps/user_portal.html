@@ -70,26 +70,34 @@
             </div> 
           {% else %}
             {% block content %}
-  	      {% if form.errors %}
-                <p class="error">Sorry, that's not a valid username or password</p>
-              {% endif %}
-              <div class="form-horizontal">
-                <form action="{% url 'login' %}" method="post">{%csrf_token%}
-                  <input class="form" name="username" type="text" placeholder="user">
-                  <input class="form" name="password" type="password" placeholder="password">
-                  <button class="btn btn-default" type="submit"> Login </button>        
-                </form>
-              <div class="form-horizontal">
-                <form action="{% url 'user_registration' %}" method="post">{%csrf_token%}
-                  <input class="form" name="username" type="text" placeholder="user">
-                  <input class="form" name="password" type="password" placeholder="password">
-                  <input class="form" name="email" type="email" placeholder="f@m">
-                  <button class="btn btn-default" type="submit"> Register </button>        
-                </form>
-              </div>
-              <div>
-            <li><a href='{% url "password_reset_recover" %}'>Reset</a></li>
-              </div>
+          {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+                </ul>
+          {% endif %}
+            <p> If you already have an account, you can log in here. </p>
+            <div class="form-horizontal">
+              <form action="{% url 'login' %}" method="post">{%csrf_token%}
+                <input class="form" name="username" type="text" placeholder="user">
+                <input class="form" name="password" type="password" placeholder="password">
+                <button class="btn btn-default" type="submit"> Login </button>        
+              </form>
+            </div>
+            <p> You can register an account here; After registration you will arrive at a pass
+                word reset page to verify your email address. </p>
+            <div class="form-horizontal">
+              <form action="{% url 'user_registration' %}" method="post">{%csrf_token%}
+                <input class="form" name="username" type="text" placeholder="user">
+                <input class="form" name="email" type="email" placeholder="your@adress.ac.uk">
+                <button class="btn btn-default" type="submit"> Register </button>        
+              </form>
+            </div>
+            <div>
+              <p> You can reset your password here:  
+              <a href='{% url "password_reset_recover" %}'>Password Reset</a></li> </p>
+            </div>
             {% endblock %}
           {% endif %}
         </div>

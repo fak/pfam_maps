@@ -483,37 +483,46 @@ def login_view(request):
     if user is not None:
         if user.is_active:
             login(request, user)
-            # Redirect to success pagei.
-            return render_to_response('pfam_maps/user_portal.html',c,context_instance=RequestContext(request))
-        else:
-            # Return a 'disabled account' error message
-            return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
-    else:
-        # Return an 'invalid login' error message.
-            return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
-
-from django.contrib.auth.models import User
-def registration_view(request):
-    """
-    Log in user and return to the user_portal view.
-    """
-    username = request.POST['username']
-    password = request.POST['password']
-    email = request.POST['email']
-    c={}
-    user = User.objects.create_user(username, email, password)
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        if user.is_active:
-            login(request, user)
             # Redirect to success page.
             return render_to_response('pfam_maps/user_portal.html',c,context_instance=RequestContext(request))
         else:
             # Return a 'disabled account' error message
+            messages.warning(request, "Sorry, your account is disabled.")
             return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
     else:
         # Return an 'invalid login' error message.
-        return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
+            messages.warning(request, "Sorry, this is not a valid user or password.")
+            return render_to_response('pfam_maps/user_portal.html',c, context_instance=RequestContext(request))
+
+import string
+import random
+from django.contrib.auth.models import User
+from django.contrib import messages
+def registration_view(request):
+    """
+    Log in user and return to the user_portal view.
+    """
+    # Alphanumeric + special characters
+    chars = string.letters + string.digits + string.punctuation
+    password = ''.join((random.choice(chars)) for x in range(16))
+    username = request.POST['username']
+    email = request.POST['email']
+    c={}
+    try:
+        user = User.objects.get(username=username)
+        messages.warning(request, "Sorry, this username is taken.")
+        return HttpResponseRedirect(reverse('user_portal'))
+    except User.DoesNotExist:
+        pass
+    try:
+        user = User.objects.get(email=email)
+        messages.warning(request, "This email is already registered. Try a password reset.")
+        return HttpResponseRedirect(reverse('user_portal'))
+    except User.DoesNotExist:
+        pass
+    user = User.objects.create_user(username, email, password)
+    messages.warning(request, "Please enter your email again and follow the confirmation link sent to your email address.")
+    return HttpResponseRedirect(reverse('password_reset_recover'))
 
 def logs_portal(request):
     """
