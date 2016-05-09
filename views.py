@@ -12,6 +12,9 @@ import helper
 import time
 from django.contrib.auth import authenticate, login, logout
 import csv
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def index(request):
