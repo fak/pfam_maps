@@ -48,8 +48,8 @@ def evidence(request, pfam_name):
     """
     dois = ValidDomains.objects.filter(domain_name=pfam_name)
     cits = []
-    for doi in dois:
-        cits.append(helper.doi2json(doi.evidence))
+    #for doi in dois:
+    #    cits.append(helper.doi2json(doi.evidence))
     acts = helper.custom_sql("""
     SELECT DISTINCT act.standard_value, act.standard_units, act.standard_type, act.activity_id, act.molregno, single_domains.accession
     FROM pfam_maps pm
@@ -669,12 +669,24 @@ class Echo(object):
 
 
 def download_logs(request):
-    qres = helper.custom_sql("""SELECT * FROM pfam_maps WHERE NOT submitter = 'system'""", [])
+    sql = """
+	  SELECT * 
+	  FROM pfam_maps 
+	  WHERE submitter != 'system'
+	  """
+    qres = helper.custom_sql(sql, [])
+    # Create the HttpResponse object with the appropriate CSV header.
+    #response = HttpResponse(content_type='text/csv')
+    #response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+    #writer = csv.writer(response)
+    #for row in qres:
+    #    writer.writerow(row)
+    #return response
     #qres=PfamMaps.objects.all.iterator()
     pseudo_buffer=Echo()
     writer = csv.writer(pseudo_buffer)
-    response = StreamingHttpResponse((writer.writerow(row) for row in qres),content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=pfam_maps.csv'
+    response = StreamingHttpResponse((writer.writerow(row) for row in qres),content_type='application/txt')
+    response['Content-Disposition'] = 'attachment; filename="pfam_maps.csv"'
     return response
 
 
@@ -683,7 +695,7 @@ def download_pfam(request):
     pseudo_buffer=Echo()
     writer = csv.writer(pseudo_buffer)
     response = StreamingHttpResponse((writer.writerow(row) for row in qres),content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=valid_domains.txt'
+    response['Content-Disposition'] = 'attachment; filename="valid_domains.txt"'
     return response
 
 
